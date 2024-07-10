@@ -1,19 +1,103 @@
-<div class="container is-max-desktop">
-  <div class="card">
-    <div class="card-content">
-      <div class="media">
-        <div class="media-left">
-          <%= image_tag @product.image_url, alt: @product.name, class: "image is-256x256" %>
-        </div>
-        <div class="media-content">
-          <h1 class="title is-3"><%= @product.name %></h1>
-          <p class="subtitle is-5"><%= @product.description %></p>
-          <p class="has-text-success is-size-4">$<%= @product.price %></p>
-          <% if @product.sale %>
-            <p class="has-text-danger is-size-5">On Sale!</p>
-          <% end %>
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-one-third">
+        <figure class="image is-square">
+          <img src="<%= @product.image_url %>" alt="<%= @product.name %>" style="object-fit: contain; height: auto;">
+        </figure>
+      </div>
+      <div class="column">
+        <h1 class="title"><%= @product.name %></h1>
+        <h2 class="subtitle">Market Price: $<%= @product.price %></h2>
+        <% if @product.sale %>
+          <p class="has-text-danger">On Sale!</p>
+        <% end %>
+        <p><%= @product.description %></p>
+
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Type</td>
+              <td><%= @product.card_type %></td>
+            </tr>
+            <tr>
+              <td>Attack</td>
+              <td><%= @product.atk %></td>
+            </tr>
+            <tr>
+              <td>Defense</td>
+              <td><%= @product.def %></td>
+            </tr>
+            <tr>
+              <td>Level</td>
+              <td><%= @product.level %></td>
+            </tr>
+            <tr>
+              <td>Race</td>
+              <td><%= @product.race %></td>
+            </tr>
+            <tr>
+              <td>Attribute</td>
+              <td><%= @product.card_attribute %></td>
+            </tr>
+            <tr>
+              <td>Link Marker</td>
+              <td><%= @product.linkmarker %></td>
+            </tr>
+            <tr>
+              <td>Scale</td>
+              <td><%= @product.scale %></td>
+            </tr>
+            <tr>
+              <td>Set</td>
+              <td><%= @product.cardset %></td>
+            </tr>
+            <tr>
+              <td>Archetype</td>
+              <td><%= @product.archetype %></td>
+            </tr>
+            <tr>
+              <td>Banlist</td>
+              <td><%= @product.banlist %></td>
+            </tr>
+            <tr>
+              <td>Format</td>
+              <td><%= @product.format %></td>
+            </tr>
+            <tr>
+              <td>Staple</td>
+              <td><%= @product.staple ? 'Yes' : 'No' %></td>
+            </tr>
+            <tr>
+              <td>Has Effect</td>
+              <td><%= @product.has_effect ? 'Yes' : 'No' %></td>
+            </tr>
+            <tr>
+              <td>Release Date</td>
+              <td><%= @product.startdate %></td>
+            </tr>
+            <tr>
+              <td>End Date</td>
+              <td><%= @product.enddate %></td>
+            </tr>
+            <tr>
+              <td>Region</td>
+              <td><%= @product.dateregion %></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="buttons">
+          <a href="<%= root_path %>" class="button is-link">Back to Products</a>
+          <!-- Add more actions like Add to Cart here if needed -->
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>

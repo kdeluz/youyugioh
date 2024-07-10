@@ -24,9 +24,9 @@
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
           <a class="navbar-item" href="<%= root_path %>">Home</a>
-          <a class="navbar-item" href="<%= category_path('Monster') %>">Monster Cards</a>
-          <a class="navbar-item" href="<%= category_path('Spell') %>">Spell Cards</a>
-          <a class="navbar-item" href="<%= category_path('Trap') %>">Trap Cards</a>
+          <a class="navbar-item" href="<%= category_path('Effect Monster') %>">Effect Monster Cards</a>
+          <a class="navbar-item" href="<%= category_path('Spell Card') %>">Spell Cards</a>
+          <a class="navbar-item" href="<%= category_path('Trap Card') %>">Trap Cards</a>
           <a class="navbar-item" href="<%= sale_path %>">On Sale</a>
           <a class="navbar-item" href="<%= new_products_path %>">New Arrivals</a>
           <a class="navbar-item" href="<%= recently_updated_path %>">Recently Updated</a>
@@ -39,7 +39,15 @@
                 <%= form.text_field :keyword, placeholder: "Search products...", class: "input" %>
               </div>
               <div class="control">
-                <%= form.select :category, options_for_select([['All Categories', '']] + @categories.map { |c| [c.card_type, c.card_type] }), {}, class: "select" %>
+                <% if @categories.present? %>
+                  <%= form.select :category, options_for_select([['All Categories', '']] + @categories.map { |c| [c.card_type, c.card_type] }), {}, class: "select" %>
+                <% else %>
+                  <div class="select is-disabled">
+                    <select>
+                      <option>All Categories</option>
+                    </select>
+                  </div>
+                <% end %>
               </div>
               <div class="control">
                 <%= form.submit "Search", class: "button is-primary" %>

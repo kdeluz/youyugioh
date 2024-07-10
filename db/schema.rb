@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_220102) do
     t.string "dateregion"
     t.text "description"
     t.string "image_url"
-    t.decimal "price"
+    t.decimal "price", precision: 8, scale: 2
     t.boolean "sale"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
