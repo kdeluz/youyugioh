@@ -1,0 +1,19 @@
+<div class="container is-max-desktop">
+  <div class="card">
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+          <%= image_tag @product.image_url, alt: @product.name, class: "image is-256x256" %>
+        </div>
+        <div class="media-content">
+          <h1 class="title is-3"><%= @product.name %></h1>
+          <p class="subtitle is-5"><%= @product.description %></p>
+          <p class="has-text-success is-size-4">$<%= @product.price %></p>
+          <% if @product.sale %>
+            <p class="has-text-danger is-size-5">On Sale!</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -95,6 +95,7 @@ GEM
     concurrent-ruby (1.3.3)
     connection_pool (2.4.1)
     crass (1.0.6)
+    csv (3.3.0)
     date (3.3.4)
     debug (1.9.2)
       irb (~> 1.10)
@@ -103,6 +104,10 @@ GEM
     erubi (1.13.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    httparty (0.22.0)
+      csv
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.0.1)
@@ -116,6 +121,18 @@ GEM
     jbuilder (2.12.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    kaminari (1.2.2)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.2)
+      kaminari-activerecord (= 1.2.2)
+      kaminari-core (= 1.2.2)
+    kaminari-actionview (1.2.2)
+      actionview
+      kaminari-core (= 1.2.2)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
@@ -130,6 +147,8 @@ GEM
     mini_mime (1.1.5)
     minitest (5.24.1)
     msgpack (1.7.2)
+    multi_xml (0.7.1)
+      bigdecimal (~> 3.1)
     mutex_m (0.2.0)
     net-imap (0.4.14)
       date
@@ -262,8 +281,10 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
+  httparty
   importmap-rails
   jbuilder
+  kaminari
   puma (>= 5.0)
   rails (~> 7.1.3, >= 7.1.3.4)
   selenium-webdriver

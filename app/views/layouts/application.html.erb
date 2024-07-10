@@ -1,16 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>FinalYouyugioh</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>YouYuGiOh</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <%= yield %>
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="<%= root_path %>">
+          <img src="/path/to/logo.png" alt="YouYuGiOh">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="<%= root_path %>">Home</a>
+          <a class="navbar-item" href="<%= category_path('Monster') %>">Monster Cards</a>
+          <a class="navbar-item" href="<%= category_path('Spell') %>">Spell Cards</a>
+          <a class="navbar-item" href="<%= category_path('Trap') %>">Trap Cards</a>
+          <a class="navbar-item" href="<%= sale_path %>">On Sale</a>
+          <a class="navbar-item" href="<%= new_products_path %>">New Arrivals</a>
+          <a class="navbar-item" href="<%= recently_updated_path %>">Recently Updated</a>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <%= form_with url: search_path, method: :get, local: true, class: "field has-addons" do |form| %>
+              <div class="control">
+                <%= form.text_field :keyword, placeholder: "Search products...", class: "input" %>
+              </div>
+              <div class="control">
+                <%= form.select :category, options_for_select([['All Categories', '']] + @categories.map { |c| [c.card_type, c.card_type] }), {}, class: "select" %>
+              </div>
+              <div class="control">
+                <%= form.submit "Search", class: "button is-primary" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="section">
+      <div class="container">
+        <%= yield %>
+      </div>
+    </section>
   </body>
 </html>
