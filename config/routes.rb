@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/new'
+  get 'users/create'
   root 'products#index'
   resources :products, only: [:index, :show]
   get 'category/:category', to: 'products#category', as: 'category'
@@ -6,6 +8,16 @@ Rails.application.routes.draw do
   get 'new', to: 'products#new_products', as: 'new_products'
   get 'recently_updated', to: 'products#recently_updated', as: 'recently_updated'
   get 'search', to: 'products#search', as: 'search'
+
+  get 'signup', to: 'users#new'
+  post 'signup', to: 'users#create'
+  get 'login', to: 'sessions#new'
+  post 'login', to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+
+  namespace :admin do
+    get 'dashboard', to: 'dashboard#index'
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
