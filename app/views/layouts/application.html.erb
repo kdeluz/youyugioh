@@ -1,66 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>YouYuGiOh</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  </head>
+<head>
+  <title>YouYuGiOh</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <style>
+    body {
+      padding-top: 3.25rem;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-custom is-fixed-top" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="<%= root_path %>">
+      </a>
 
-  <body>
-    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="<%= root_path %>">
-        </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
 
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="<%= root_path %>">Home</a>
+        <a class="navbar-item" href="<%= category_path('Effect Monster') %>">Effect Monster Cards</a>
+        <a class="navbar-item" href="<%= category_path('Spell Card') %>">Spell Cards</a>
+        <a class="navbar-item" href="<%= category_path('Trap Card') %>">Trap Cards</a>
+        <a class="navbar-item" href="<%= sale_path %>">On Sale</a>
+        <a class="navbar-item" href="<%= new_products_path %>">New Arrivals</a>
+        <a class="navbar-item" href="<%= recently_updated_path %>">Recently Updated</a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item" href="<%= root_path %>">Home</a>
-          <a class="navbar-item" href="<%= category_path('Effect Monster') %>">Effect Monster Cards</a>
-          <a class="navbar-item" href="<%= category_path('Spell Card') %>">Spell Cards</a>
-          <a class="navbar-item" href="<%= category_path('Trap Card') %>">Trap Cards</a>
-          <a class="navbar-item" href="<%= sale_path %>">On Sale</a>
-          <a class="navbar-item" href="<%= new_products_path %>">New Arrivals</a>
-          <a class="navbar-item" href="<%= recently_updated_path %>">Recently Updated</a>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <%= form_with url: search_path, method: :get, local: true, class: "field has-addons" do |form| %>
+            <div class="control is-expanded">
+              <%= form.text_field :keyword, placeholder: "Search products...", class: "input is-fullwidth" %>
+            </div>
+            <div class="control is-expanded">
+              <% if @categories.present? %>
+                <div class="select is-fullwidth">
+                  <%= form.select :category, options_for_select([['All Categories', '']] + @categories.map { |c| [c.card_type, c.card_type] }), {}, class: "is-fullwidth" %>
+                </div>
+              <% else %>
+                <div class="select is-fullwidth">
+                  <select disabled class="is-fullwidth">
+                    <option>All Categories</option>
+                  </select>
+                </div>
+              <% end %>
+            </div>
+            <div class="control">
+              <%= form.submit "Search", class: "button is-primary" %>
+            </div>
+          <% end %>
         </div>
-
-        <div class="navbar-end">
+        <% if logged_in? %>
+          <% if current_user.id == 1 %>
+            <div class="navbar-item">
+              <a class="button is-primary" href="<%= admin_dashboard_path %>">Admin Dashboard</a>
+            </div>
+          <% end %>
           <div class="navbar-item">
-            <%= form_with url: search_path, method: :get, local: true, class: "field has-addons" do |form| %>
-              <div class="control">
-                <%= form.text_field :keyword, placeholder: "Search products...", class: "input" %>
-              </div>
-              <div class="control">
-                <% if @categories.present? %>
-                  <%= form.select :category, options_for_select([['All Categories', '']] + @categories.map { |c| [c.card_type, c.card_type] }), {}, class: "select" %>
-                <% else %>
-                  <div class="select is-disabled">
-                    <select>
-                      <option>All Categories</option>
-                    </select>
-                  </div>
-                <% end %>
-              </div>
-              <div class="control">
-                <%= form.submit "Search", class: "button is-primary" %>
-              </div>
-            <% end %>
+            <%= link_to 'Logout', logout_path, method: :delete, class: "button is-light" %>
           </div>
-        </div>
+        <% else %>
+          <div class="navbar-item">
+            <%= link_to 'Login', login_path, class: "button is-primary" %>
+          </div>
+          <div class="navbar-item">
+            <%= link_to 'Sign up', signup_path, class: "button is-light" %>
+          </div>
+        <% end %>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <section class="section">
-      <div class="container">
-        <%= yield %>
-      </div>
-    </section>
-  </body>
+  <section class="section">
+    <div class="container">
+      <%= yield %>
+    </div>
+  </section>
+</body>
 </html>

@@ -8,19 +8,6 @@
       </ul>
     </nav>
 
-    <div class="field">
-      <div class="control">
-        <div class="tags has-addons">
-          <span class="tag is-link">YuGiOh</span>
-          <span class="tag is-delete"></span>
-        </div>
-        <div class="tags has-addons">
-          <span class="tag is-link">Battles of Legend: Terminal Revenge</span>
-          <span class="tag is-delete"></span>
-        </div>
-      </div>
-    </div>
-
     <div class="control">
       <div class="select">
         <select>
@@ -38,9 +25,7 @@
           <div class="card">
             <div class="card-image">
               <figure class="image">
-                <%= link_to product_path(product) do %>
-                  <img src="<%= product.image_url %>" alt="<%= product.name %>" style="object-fit: contain; height: auto; width: 100%;">
-                <% end %>
+                <%= link_to image_tag(product.image_url, alt: product.name, style: "object-fit: contain; height: auto; width: 100%;"), product_path(product) %>
               </figure>
             </div>
             <div class="card-content">
