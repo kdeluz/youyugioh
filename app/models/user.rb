@@ -15,4 +15,3 @@ class User < ApplicationRecord
     !persisted? || !password.nil? || !password_confirmation.nil?
   end
 end
-

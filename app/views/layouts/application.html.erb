@@ -5,22 +5,12 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <style>
-    body {
-      padding-top: 3.25rem;
-    }
-  </style>
+  <%= javascript_include_tag 'application', 'data-turbo-track': 'reload' %>
 </head>
 <body>
   <nav class="navbar navbar-custom is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="<%= root_path %>">
-      </a>
-
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
       </a>
     </div>
 
@@ -59,26 +49,46 @@
             </div>
           <% end %>
         </div>
-        <% if logged_in? %>
+        <% if user_signed_in? %>
           <% if current_user.id == 1 %>
-            <<div class="navbar-item">
-            <a class="button is-primary" href="<%= admin_dashboard_path %>">Admin Dashboard</a>
+            <div class="navbar-item">
+              <a class="button is-primary" href="<%= admin_dashboard_path %>">Admin Dashboard</a>
+            </div>
+          <% end %>
+          <div class="navbar-item">
+            <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: "button is-light", data: { turbo_method: :delete, confirm: "Are you sure you want to log out?" } %>
           </div>
-        <% end %>
-        <div class="navbar-item">
-          <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: "button is-light" %>
-        </div>
-      <% else %>
-        <div class="navbar-item">
-          <%= link_to 'Login', new_user_session_path, class: "button is-primary" %>
-        </div>
-        <div class="navbar-item">
-          <%= link_to 'Sign up', new_user_registration_path, class: "button is-light" %>
-        </div>
+        <% else %>
+          <div class="navbar-item">
+            <%= link_to 'Login', new_user_session_path, class: "button is-primary" %>
+          </div>
+          <div class="navbar-item">
+            <%= link_to 'Sign up', new_user_registration_path, class: "button is-light" %>
+          </div>
         <% end %>
       </div>
     </div>
   </nav>
+
+  <div>
+    <p>Current Session: <%= session.to_hash %></p>
+    <% if user_signed_in? %>
+      <p>Signed in as: <%= current_user.email %></p>
+    <% else %>
+      <p>No user signed in</p>
+    <% end %>
+  </div>
+
+  <% if notice %>
+    <div class="notification is-info">
+      <%= notice %>
+    </div>
+  <% end %>
+  <% if alert %>
+    <div class="notification is-danger">
+      <%= alert %>
+    </div>
+  <% end %>
 
   <section class="section">
     <div class="container">
