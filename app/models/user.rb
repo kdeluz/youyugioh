@@ -7,8 +7,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true, length: { minimum: 6 }, if: :password_required?
-
-  validates :address_line1, :city, :state, :postal_code, :country, presence: true
+  validates :address_line1, :city, :province, :postal_code, :country, presence: true
 
   private
 
@@ -16,3 +15,4 @@ class User < ApplicationRecord
     !persisted? || !password.nil? || !password_confirmation.nil?
   end
 end
+

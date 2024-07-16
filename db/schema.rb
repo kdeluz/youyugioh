@@ -54,7 +54,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_165417) do
     t.string "address_line1"
     t.string "address_line2"
     t.string "city"
-    t.string "state"
+    t.string "province"
     t.string "postal_code"
     t.string "country"
     t.string "role"
@@ -69,11 +69,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_16_165417) do
     t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.integer "province_id", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["province_id"], name: "index_users_on_province_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "users", "provinces"
 end

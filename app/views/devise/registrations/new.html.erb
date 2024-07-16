@@ -1,63 +1,85 @@
-<h2>Sign up</h2>
+<h2 class="title">Sign up</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'box' }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username, autofocus: true, autocomplete: "username" %>
+    <%= f.label :username, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :username, autofocus: true, autocomplete: "username", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autocomplete: "email" %>
+    <%= f.label :email, class: 'label' %>
+    <div class="control">
+      <%= f.email_field :email, autocomplete: "email", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :password %>
+    <%= f.label :password, class: 'label' %>
     <% if @minimum_password_length %>
       <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
+    <% end %>
+    <div class="control">
+      <%= f.password_field :password, autocomplete: "new-password", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+    <%= f.label :password_confirmation, class: 'label' %>
+    <div class="control">
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :address_line1 %><br />
-    <%= f.text_field :address_line1, autocomplete: "address-line1" %>
+    <%= f.label :address_line1, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :address_line1, autocomplete: "address-line1", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :address_line2 %><br />
-    <%= f.text_field :address_line2, autocomplete: "address-line2" %>
+    <%= f.label :address_line2, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :address_line2, autocomplete: "address-line2", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :city %><br />
-    <%= f.text_field :city, autocomplete: "city" %>
+    <%= f.label :city, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :city, autocomplete: "city", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :state %><br />
-    <%= f.text_field :state, autocomplete: "Province" %>
+    <%= f.label :province, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :province, autocomplete: "province", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :postal_code %><br />
-    <%= f.text_field :postal_code, autocomplete: "postal_code" %>
+    <%= f.label :postal_code, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :postal_code, autocomplete: "postal_code", class: 'input' %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :country %><br />
-    <%= f.text_field :country, autocomplete: "country" %>
+    <%= f.label :country, class: 'label' %>
+    <div class="control">
+      <%= f.text_field :country, autocomplete: "country", class: 'input' %>
+    </div>
   </div>
 
-  <div class="actions">
-    <%= f.submit "Sign up" %>
+  <div class="field">
+    <div class="control">
+      <%= f.submit "Sign up", class: 'button is-primary' %>
+    </div>
   </div>
 <% end %>
 
