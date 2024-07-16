@@ -1,4 +1,3 @@
-# db/migrate/20240716165417_add_address_to_users.rb
 class AddAddressToUsers < ActiveRecord::Migration[6.0]
   def change
     change_table :users, bulk: true do |t|
