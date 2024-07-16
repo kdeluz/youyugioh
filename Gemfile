@@ -32,6 +32,9 @@ gem 'kaminari'
 # simplify http requests
 gem 'httparty'
 
+# authentication 
+gem 'devise'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
