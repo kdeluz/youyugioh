@@ -9,6 +9,10 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, if: :password_required?
   validates :address_line1, :city, :province, :postal_code, :country, presence: true
 
+  def admin?
+    role == "admin"
+  end
+
   private
 
   def password_required?
