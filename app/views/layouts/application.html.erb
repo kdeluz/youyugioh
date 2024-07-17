@@ -28,9 +28,6 @@
       <div class="navbar-start">
         <a class="navbar-item" href="<%= root_path %>">Home</a>
         <a class="navbar-item" href="<%= about_path %>">About Us</a>
-        <a class="navbar-item" href="<%= category_path('Effect Monster') %>">Effect Monster Cards</a>
-        <a class="navbar-item" href="<%= category_path('Spell Card') %>">Spell Cards</a>
-        <a class="navbar-item" href="<%= category_path('Trap Card') %>">Trap Cards</a>
         <a class="navbar-item" href="<%= sale_path %>">On Sale</a>
         <a class="navbar-item" href="<%= new_products_path %>">New Arrivals</a>
         <a class="navbar-item" href="<%= recently_updated_path %>">Recently Updated</a>
@@ -68,7 +65,7 @@
             </div>
           <% end %>
           <div class="navbar-item">
-            <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: "button is-light" %>
+            <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: "button is-light" %>
           </div>
         <% else %>
           <div class="navbar-item">
