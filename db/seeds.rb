@@ -49,3 +49,4 @@ if response.success?
 else
   puts "Failed to fetch cards"
 end
+AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?

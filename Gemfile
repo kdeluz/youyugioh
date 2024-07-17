@@ -35,6 +35,12 @@ gem 'httparty'
 # authentication 
 gem 'devise'
 
+# admin
+gem 'activeadmin'
+
+gem 'sassc'
+
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
