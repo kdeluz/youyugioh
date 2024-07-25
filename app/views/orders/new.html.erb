@@ -18,7 +18,7 @@
   <div class="field">
     <%= form.label :province %>
     <div class="control">
-      <%= form.text_field :province, class: 'input', value: @order.province %>
+      <%= form.select :province, province_options, {}, class: 'input' %>
     </div>
   </div>
 

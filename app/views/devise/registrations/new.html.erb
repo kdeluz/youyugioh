@@ -56,9 +56,9 @@
   </div>
 
   <div class="field">
-    <%= f.label :province, class: 'label' %>
+    <%= f.label :province %>
     <div class="control">
-      <%= f.text_field :province, autocomplete: "province", class: 'input' %>
+      <%= f.select :province, province_options, {}, class: 'input' %>
     </div>
   </div>
 
