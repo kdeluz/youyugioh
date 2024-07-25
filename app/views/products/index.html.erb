@@ -56,6 +56,9 @@
                 <% if product.sale %>
                   <p class="has-text-danger">On Sale!</p>
                 <% end %>
+                <%= form_with url: add_to_cart_product_path(product), method: :post, local: true do %>
+                  <%= submit_tag 'Add to Cart', class: 'button is-primary' %>
+                <% end %>
               </div>
             </div>
           </div>
@@ -68,3 +71,5 @@
     </nav>
   </div>
 </div>
+
+<%= link_to 'Cart', cart_path, class: 'button is-primary fixed-cart-button' %>

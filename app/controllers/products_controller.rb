@@ -43,6 +43,22 @@ class ProductsController < ApplicationController
       @products = @products.page(params[:page]).per(12)
       render :index
     end
+    
+    def add_to_cart
+      product = Product.find(params[:id])
+      quantity = params[:quantity].to_i
+  
+      session[:cart] ||= {}
+      cart = session[:cart]
+  
+      if cart[product.id.to_s]
+        cart[product.id.to_s] += quantity
+      else
+        cart[product.id.to_s] = quantity
+      end
+  
+      redirect_to cart_path
+    end
   
     private
   

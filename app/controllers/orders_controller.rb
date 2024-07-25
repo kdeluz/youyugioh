@@ -5,15 +5,10 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.new(order_params)
-    @order.customer = current_customer
-    @order.total = current_cart.cart_items.sum { |item| item.quantity * item.product.price }
+    @order.customer = current_user if user_signed_in?
 
     if @order.save
-      process_payment
-      current_cart.cart_items.each do |cart_item|
-        OrderItem.create(order: @order, product: cart_item.product, quantity: cart_item.quantity, price: cart_item.product.price)
-      end
-      session[:cart_id] = nil
+      session[:cart] = {}
       redirect_to root_path, notice: 'Order was successfully placed.'
     else
       render :new
@@ -23,7 +18,7 @@ class OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:customer_id, :total, :status)
+    params.require(:order).permit(:address, :province, :postal_code)
   end
 
   def current_customer

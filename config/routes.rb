@@ -1,4 +1,3 @@
-# config/routes.rb
 Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
@@ -7,16 +6,7 @@ Rails.application.routes.draw do
   root 'products#index'
 
   resources :products, only: [:index, :show] do
-    member do
-      post 'add_to_cart'
-    end
-  end
-
-  resources :carts, only: [:show] do
-    collection do
-      delete 'remove_item/:id', to: 'carts#remove_item', as: 'remove_item'
-      patch 'update_item/:id', to: 'carts#update_item', as: 'update_item'
-    end
+    post 'add_to_cart', on: :member
   end
 
   get 'category/:category', to: 'products#category', as: 'category'
@@ -24,7 +14,18 @@ Rails.application.routes.draw do
   get 'new', to: 'products#new_products', as: 'new_products'
   get 'recently_updated', to: 'products#recently_updated', as: 'recently_updated'
   get 'search', to: 'products#search', as: 'search'
-  
+
+  get 'contact', to: 'pages#contact', as: 'contact'
+  get 'about', to: 'pages#about', as: 'about'
+
+  resource :cart, only: [:show] do
+    collection do
+      post 'add_item'
+      post 'remove_item'
+      post 'update_quantity'
+    end
+  end
+
   namespace :admin do
     get 'dashboard', to: 'admin_dashboard#index'
   end

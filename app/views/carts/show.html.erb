@@ -1,32 +1,38 @@
-<h1>Shopping Cart</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Price</th>
-      <th>Total</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @cart.cart_items.each do |item| %>
+<h1>Your Cart</h1>
+
+<% if @cart.empty? %>
+  <p>Your cart is empty.</p>
+<% else %>
+  <table class="table is-fullwidth">
+    <thead>
       <tr>
-        <td><%= item.product.name %></td>
-        <td>
-          <%= form_with(model: item, url: cart_item_path(item), method: :patch, local: true) do |f| %>
-            <%= f.number_field :quantity, value: item.quantity %>
-            <%= f.submit "Update" %>
-          <% end %>
-        </td>
-        <td><%= number_to_currency(item.product.price) %></td>
-        <td><%= number_to_currency(item.quantity * item.product.price) %></td>
-        <td>
-          <%= link_to 'Remove', cart_item_path(item), method: :delete %>
-        </td>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-<h2>Total: <%= number_to_currency(@cart.cart_items.sum { |item| item.quantity * item.product.price }) %></h2>
-<%= link_to 'Checkout', new_order_path, class: 'button is-primary' %>
+    </thead>
+    <tbody>
+      <% @cart.each do |product_id, quantity| %>
+        <% product = Product.find(product_id) %>
+        <tr>
+          <td><%= product.name %></td>
+          <td>
+            <%= form_with url: update_quantity_cart_path, method: :post, local: true do %>
+              <input type="hidden" name="product_id" value="<%= product_id %>">
+              <%= number_field_tag :quantity, quantity, min: 1 %>
+              <%= submit_tag 'Update', class: 'button is-small' %>
+            <% end %>
+          </td>
+          <td>
+            <%= form_with url: remove_item_cart_path, method: :post, local: true do %>
+              <input type="hidden" name="product_id" value="<%= product_id %>">
+              <%= submit_tag 'Remove', class: 'button is-danger is-small' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to 'Checkout', new_order_path, class: 'button is-primary' %>
+<% end %>

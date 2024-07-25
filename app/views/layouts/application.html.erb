@@ -10,6 +10,11 @@
     body {
       padding-top: 3.25rem;
     }
+    .fixed-cart-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
   </style>
 </head>
 <body>
@@ -88,5 +93,7 @@
       <%= yield %>
     </div>
   </section>
+
+  <%= link_to 'Cart', cart_path, class: 'button is-primary fixed-cart-button' %>
 </body>
 </html>
