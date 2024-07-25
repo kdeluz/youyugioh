@@ -49,6 +49,7 @@ class OrdersController < ApplicationController
       product = Product.find(product_id)
       total += product.price * quantity
     end
-    total
+    tax = TaxCalculator.calculate_tax(total, @order.province)
+    total + tax
   end
 end
