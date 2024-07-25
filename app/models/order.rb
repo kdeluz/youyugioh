@@ -1,6 +1,5 @@
 class Order < ApplicationRecord
-  belongs_to :customer, optional: true
-  has_many :order_items
+  belongs_to :user, optional: true
 
-  accepts_nested_attributes_for :order_items
+  validates :address_line1, :city, :province, :postal_code, :country, presence: true
 end
