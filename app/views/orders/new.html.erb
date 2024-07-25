@@ -1,6 +1,6 @@
 <h1>Checkout</h1>
 
-<%= form_with model: @order, local: true, id: 'payment-form' do |form| %>
+<%= form_with model: @order, url: orders_path, method: :post, local: true, id: 'payment-form' do |form| %>
   <div class="field">
     <%= form.label :address_line1 %>
     <div class="control">
@@ -56,6 +56,14 @@
       <% end %>
     </tbody>
   </table>
+
+  <h2>Taxes</h2>
+  <p>Total before taxes: <%= number_to_currency(@total_amount, unit: "$") %></p>
+  <p>GST: <%= number_to_currency(@gst, unit: "$") %></p>
+  <p>PST: <%= number_to_currency(@pst, unit: "$") %></p>
+  <p>HST: <%= number_to_currency(@hst, unit: "$") %></p>
+  <p>QST: <%= number_to_currency(@qst, unit: "$") %></p>
+  <p>Total after taxes: <%= number_to_currency(@total_with_taxes, unit: "$") %></p>
 
   <div class="field">
     <div class="control">
@@ -135,7 +143,7 @@
       var form = document.getElementById('payment-form');
       var hiddenInput = document.createElement('input');
       hiddenInput.setAttribute('type', 'hidden');
-      hiddenInput.setAttribute('name', 'stripe_token');
+      hiddenInput.setAttribute('name', 'order[stripe_token]');
       hiddenInput.setAttribute('value', token.id);
       form.appendChild(hiddenInput);
 
