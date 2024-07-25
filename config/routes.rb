@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   get 'new', to: 'products#new_products', as: 'new_products'
   get 'recently_updated', to: 'products#recently_updated', as: 'recently_updated'
   get 'search', to: 'products#search', as: 'search'
-
   get 'contact', to: 'pages#contact', as: 'contact'
   get 'about', to: 'pages#about', as: 'about'
 
@@ -25,6 +24,8 @@ Rails.application.routes.draw do
       post 'update_quantity'
     end
   end
+
+  resources :orders, only: [:new, :create]
 
   namespace :admin do
     get 'dashboard', to: 'admin_dashboard#index'
