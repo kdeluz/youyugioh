@@ -15,18 +15,12 @@ class OrdersController < ApplicationController
   end
 
   def create
+    @cart = session[:cart] || {}
     @order = Order.new(order_params)
     @order.user = current_user if user_signed_in?
 
-    @cart = session[:cart] || {}
-    @products = Product.find(@cart.keys)
-
     if @order.save
-      @cart.each do |product_id, quantity|
-        product = Product.find(product_id)
-        @order.order_items.create(product: product, quantity: quantity)
-      end
-      process_payment
+      process_payment(params[:stripe_token])
       session[:cart] = {}
       redirect_to root_path, notice: 'Order was successfully placed.'
     else
@@ -40,11 +34,11 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:address_line1, :city, :province, :postal_code, :country, order_items_attributes: [:product_id, :quantity])
   end
 
-  def process_payment
+  def process_payment(stripe_token)
     Stripe::Charge.create(
       amount: (calculate_order_total * 100).to_i,
       currency: 'cad',
-      source: params[:stripeToken],
+      source: stripe_token,
       description: "Order ##{@order.id}"
     )
   end
