@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'cart_items/create'
+  get 'cart_items/update'
+  get 'cart_items/destroy'
+  get 'carts/show'
   get 'pages/contact'
   get 'pages/about'
   devise_for :admin_users, ActiveAdmin::Devise.config
