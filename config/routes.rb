@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   end
 
   resources :orders, only: [:new, :create]
+  resources :invoices, only: [:index, :show], path: 'user/invoices'
 
   namespace :admin do
     get 'dashboard', to: 'admin_dashboard#index'

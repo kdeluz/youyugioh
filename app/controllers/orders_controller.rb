@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
     if user_signed_in?
       @order.address_line1 = current_user.address_line1
       @order.city = current_user.city
-      @order.province = current_user.province || 'Default Province'
+      @order.province = current_user.province
       @order.postal_code = current_user.postal_code
       @order.country = current_user.country
     end
@@ -19,12 +19,14 @@ class OrdersController < ApplicationController
   def create
     @order = Order.new(order_params)
     @order.user = current_user if user_signed_in?
+    @cart = session[:cart] || {}
 
     if @order.save
       stripe_token = params[:order][:stripe_token]
       process_payment(stripe_token)
+      create_invoice(@order)
       session[:cart] = {}
-      redirect_to root_path, notice: 'Order was successfully placed.'
+      redirect_to user_invoices_path, notice: 'Order was successfully placed!'
     else
       handle_new_order_view
       render :new
@@ -56,9 +58,22 @@ class OrdersController < ApplicationController
     raise
   end
 
+  def create_invoice(order)
+    Invoice.create!(
+      user: order.user,
+      order: order,
+      invoice_number: SecureRandom.hex(10),
+      total: @total_with_taxes,
+      gst: @gst,
+      pst: @pst,
+      hst: @hst,
+      qst: @qst
+    )
+  end
+
   def calculate_order_total
     total = 0
-    session[:cart].each do |product_id, quantity|
+    @cart.each do |product_id, quantity|
       product = Product.find(product_id)
       total += product.price * quantity
     end

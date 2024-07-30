@@ -1,0 +1,8 @@
+<h1>Invoice <%= @invoice.invoice_number %></h1>
+
+<p><strong>Order:</strong> <%= @invoice.order.id %></p>
+<p><strong>Total:</strong> <%= number_to_currency(@invoice.total, unit: "$") %></p>
+<p><strong>GST:</strong> <%= number_to_currency(@invoice.gst, unit: "$") %></p>
+<p><strong>PST:</strong> <%= number_to_currency(@invoice.pst, unit: "$") %></p>
+<p><strong>HST:</strong> <%= number_to_currency(@invoice.hst, unit: "$") %></p>
+<p><strong>QST:</strong> <%= number_to_currency(@invoice.qst, unit: "$") %></p>

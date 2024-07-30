@@ -1,0 +1,22 @@
+<h1>Your Invoices</h1>
+
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th>Invoice Number</th>
+      <th>Total</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @invoices.each do |invoice| %>
+      <tr>
+        <td><%= invoice.invoice_number %></td>
+        <td><%= number_to_currency(invoice.total, unit: "$") %></td>
+        <td><%= invoice.created_at.strftime("%B %d, %Y") %></td>
+        <td><%= link_to 'View', invoice_path(invoice), class: 'button is-link' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

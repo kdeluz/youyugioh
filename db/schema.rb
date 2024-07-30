@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_25_155840) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_30_043630) do
   create_table "about_pages", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -74,6 +74,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_155840) do
     t.string "country"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "order_id", null: false
+    t.string "invoice_number"
+    t.decimal "total"
+    t.decimal "gst"
+    t.decimal "pst"
+    t.decimal "hst"
+    t.decimal "qst"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_invoices_on_order_id"
+    t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -165,6 +180,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_155840) do
 
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "invoices", "orders"
+  add_foreign_key "invoices", "users"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
   add_foreign_key "orders", "users"

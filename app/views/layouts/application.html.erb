@@ -68,6 +68,9 @@
           <% end %>
         </div>
         <% if user_signed_in? %>
+          <div class="navbar-item">
+            <%= link_to 'User Account', invoices_path, class: 'button is-primary' %>
+          </div>
           <% if current_user.admin? %>
             <div class="navbar-item">
               <a class="button is-primary" href="<%= admin_dashboard_path %>">Admin Dashboard</a>
