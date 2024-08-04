@@ -21,10 +21,24 @@ class OrdersController < ApplicationController
     @order.user = current_user if user_signed_in?
     @cart = session[:cart] || {}
 
+    @cart.each do |product_id, quantity|
+      product = Product.find(product_id)
+      @order.order_items.build(product: product, quantity: quantity, price: product.price)
+    end
+
+    @total_amount = calculate_order_total
+    @gst, @pst, @hst, @qst, @total_with_taxes = TaxCalculator.calculate_tax(@total_amount, @order.province)
+
+    @order.total = @total_with_taxes
+    @order.gst = @gst
+    @order.pst = @pst
+    @order.hst = @hst
+    @order.qst = @qst
+
     if @order.save
       stripe_token = params[:order][:stripe_token]
       process_payment(stripe_token)
-      create_invoice(@order)
+      @order.create_invoice
       session[:cart] = {}
       redirect_to user_invoices_path, notice: 'Order was successfully placed!'
     else
@@ -40,7 +54,7 @@ class OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:address_line1, :city, :province, :postal_code, :country, order_items_attributes: [:product_id, :quantity])
+    params.require(:order).permit(:address_line1, :city, :province, :postal_code, :country)
   end
 
   def process_payment(stripe_token)
@@ -56,19 +70,6 @@ class OrdersController < ApplicationController
   rescue Stripe::StripeError => e
     Rails.logger.error "Stripe error while processing payment: #{e.message}"
     raise
-  end
-
-  def create_invoice(order)
-    Invoice.create!(
-      user: order.user,
-      order: order,
-      invoice_number: SecureRandom.hex(10),
-      total: @total_with_taxes,
-      gst: @gst,
-      pst: @pst,
-      hst: @hst,
-      qst: @qst
-    )
   end
 
   def calculate_order_total

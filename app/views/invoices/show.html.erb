@@ -1,8 +1,33 @@
 <h1>Invoice <%= @invoice.invoice_number %></h1>
 
-<p><strong>Order:</strong> <%= @invoice.order.id %></p>
-<p><strong>Total:</strong> <%= number_to_currency(@invoice.total, unit: "$") %></p>
-<p><strong>GST:</strong> <%= number_to_currency(@invoice.gst, unit: "$") %></p>
-<p><strong>PST:</strong> <%= number_to_currency(@invoice.pst, unit: "$") %></p>
-<p><strong>HST:</strong> <%= number_to_currency(@invoice.hst, unit: "$") %></p>
-<p><strong>QST:</strong> <%= number_to_currency(@invoice.qst, unit: "$") %></p>
+<p><strong>Total:</strong> <%= number_to_currency(@invoice.total) %></p>
+<p><strong>GST:</strong> <%= number_to_currency(@invoice.gst) %></p>
+<p><strong>PST:</strong> <%= number_to_currency(@invoice.pst) %></p>
+<p><strong>HST:</strong> <%= number_to_currency(@invoice.hst) %></p>
+<p><strong>QST:</strong> <%= number_to_currency(@invoice.qst) %></p>
+
+<h2>Order Details</h2>
+<p><strong>Order ID:</strong> <%= @invoice.order.id %></p>
+<p><strong>Address:</strong> <%= @invoice.order.address_line1 %>, <%= @invoice.order.city %>, <%= @invoice.order.province %>, <%= @invoice.order.postal_code %>, <%= @invoice.order.country %></p>
+
+<h2>Order Items</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @invoice.order.order_items.each do |item| %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td><%= item.quantity %></td>
+        <td><%= number_to_currency(item.price) %></td>
+        <td><%= number_to_currency(item.price * item.quantity) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
