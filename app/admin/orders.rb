@@ -42,21 +42,5 @@ ActiveAdmin.register Order do
         end
       end
     end
-  
-    form do |f|
-      f.inputs do
-        f.input :user
-        f.input :address_line1
-        f.input :city
-        f.input :province
-        f.input :postal_code
-        f.input :country
-        f.input :gst
-        f.input :pst
-        f.input :hst
-        f.input :qst
-      end
-      f.actions
-    end
   end
   

@@ -20,7 +20,7 @@ class Order < ApplicationRecord
       user: self.user,
       order: self,
       invoice_number: SecureRandom.hex(10),
-      total: self.total,
+      total: self.calculate_order_total,
       gst: self.gst,
       pst: self.pst,
       hst: self.hst,

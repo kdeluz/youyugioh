@@ -1,21 +1,27 @@
 <h1>Your Invoices</h1>
 
-<table class="table is-fullwidth">
+<table class="table">
   <thead>
     <tr>
       <th>Invoice Number</th>
       <th>Total</th>
-      <th>Date</th>
-      <th>Actions</th>
+      <th>GST</th>
+      <th>PST</th>
+      <th>HST</th>
+      <th>QST</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <% @invoices.each do |invoice| %>
       <tr>
         <td><%= invoice.invoice_number %></td>
-        <td><%= number_to_currency(invoice.total, unit: "$") %></td>
-        <td><%= invoice.created_at.strftime("%B %d, %Y") %></td>
-        <td><%= link_to 'View', invoice_path(invoice), class: 'button is-link' %></td>
+        <td><%= number_to_currency(invoice.total) %></td>
+        <td><%= number_to_currency(invoice.gst) %></td>
+        <td><%= number_to_currency(invoice.pst) %></td>
+        <td><%= number_to_currency(invoice.hst) %></td>
+        <td><%= number_to_currency(invoice.qst) %></td>
+        <td><%= link_to 'View', invoice_path(invoice) %></td>
       </tr>
     <% end %>
   </tbody>

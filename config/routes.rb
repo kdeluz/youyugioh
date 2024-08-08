@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :orders, only: [:index, :show]
+    resources :invoices, only: [:index, :show]
     get 'dashboard', to: 'admin_dashboard#index'
   end
 
