@@ -25,10 +25,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :orders, only: [:new, :create]
+  resources :orders, only: [:new, :create, :index, :show]
   resources :invoices, only: [:index, :show], path: 'user/invoices'
 
   namespace :admin do
+    resources :orders, only: [:index, :show]
     get 'dashboard', to: 'admin_dashboard#index'
   end
 
