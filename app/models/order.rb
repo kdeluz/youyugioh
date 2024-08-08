@@ -3,10 +3,6 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :destroy
   has_one :invoice
 
-  accepts_nested_attributes_for :order_items
-
-  validates :address_line1, :city, :province, :postal_code, :country, presence: true
-
   def calculate_order_total
     total = 0
     self.order_items.each do |item|
@@ -20,7 +16,7 @@ class Order < ApplicationRecord
       user: self.user,
       order: self,
       invoice_number: SecureRandom.hex(10),
-      total: self.calculate_order_total,
+      total: self.total,
       gst: self.gst,
       pst: self.pst,
       hst: self.hst,

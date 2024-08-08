@@ -1,14 +1,14 @@
 <h1>All Orders</h1>
 
 <% @orders.each do |order| %>
-  <h2>Order <%= order.id %> by <%= order.user.email %></h2>
-  <p>
-    <strong>Total:</strong> <%= number_to_currency(order.calculate_order_total) %><br>
-    <strong>GST:</strong> <%= number_to_currency(order.gst) %><br>
-    <strong>PST:</strong> <%= number_to_currency(order.pst) %><br>
-    <strong>HST:</strong> <%= number_to_currency(order.hst) %><br>
-    <strong>QST:</strong> <%= number_to_currency(order.qst) %>
-  </p>
+<h2>Order <%= order.id %> by <%= order.user.email %></h2>
+<p>
+  <strong>Total:</strong> <%= number_to_currency(order.calculate_order_total) %><br>
+  <strong>GST:</strong> <%= number_to_currency(order.gst) %><br>
+  <strong>PST:</strong> <%= number_to_currency(order.pst) %><br>
+  <strong>HST:</strong> <%= number_to_currency(order.hst) %><br>
+  <strong>QST:</strong> <%= number_to_currency(order.qst) %><br>
+</p>
   <h3>Items:</h3>
   <ul>
     <% order.order_items.each do |item| %>
