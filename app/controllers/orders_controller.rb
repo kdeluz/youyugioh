@@ -6,7 +6,11 @@ class OrdersController < ApplicationController
     @cart = session[:cart] || {}
     @products = Product.find(@cart.keys)
     if user_signed_in?
-      @order.assign_attributes(current_user.slice(:address_line1, :city, :province, :postal_code, :country))
+      @order.address_line1 = current_user.address_line1
+      @order.city = current_user.city
+      @order.province = current_user.province
+      @order.postal_code = current_user.postal_code
+      @order.country = current_user.country
     end
     @total_amount = calculate_order_total
     @gst, @pst, @hst, @qst, @total_with_taxes = TaxCalculator.calculate_tax(@total_amount, @order.province)
