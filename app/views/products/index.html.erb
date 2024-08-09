@@ -25,43 +25,22 @@
     </nav>
 
     <div class="control">
-      <div class="select">
-        <select>
-          <option>Product Type</option>
-          <option>Card Type</option>
-          <option>Rarity</option>
-        </select>
-      </div>
-      <button class="button">Clear Filters</button>
+    <div class="select">
+      <select onchange="window.location.href=this.value;">
+        <option value="<%= products_path(sort: 'alphabetical') %>" <%= 'selected' if params[:sort] == 'alphabetical' %>>Alphabetical</option>
+        <option value="<%= products_path(sort: 'price_high_low') %>" <%= 'selected' if params[:sort] == 'price_high_low' %>>Price High-Low</option>
+        <option value="<%= products_path(sort: 'price_low_high') %>" <%= 'selected' if params[:sort] == 'price_low_high' %>>Price Low-High</option>
+      </select>
     </div>
+    <%= link_to 'Clear Filters', products_path, class: 'button' %>
+  </div>
+  
 
     <div class="columns is-multiline is-centered">
       <% @products.each do |product| %>
-        <div class="column is-one-quarter-desktop is-one-third-tablet">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image">
-                <%= link_to image_tag(product.image_url, alt: product.name, style: "object-fit: contain; height: auto; width: 100%;"), product_path(product) %>
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="media">
-                <div class="media-content">
-                  <p class="title is-4"><%= link_to product.name, product_path(product) %></p>
-                  <p class="subtitle is-6">Market Price: $<%= product.price %></p>
-                </div>
-              </div>
-              <div class="content">
-                <p><%= truncate(product.description, length: 100) %></p>
-                <% if product.sale %>
-                  <p class="has-text-danger">On Sale!</p>
-                <% end %>
-              </div>
-            </div>
-          </div>
-        </div>
+        <%= render partial: 'product', locals: { product: product } %>
       <% end %>
-    </div>
+    </div>  
 
     <nav class="pagination is-centered" role="navigation" aria-label="pagination">
       <%= paginate @products %>

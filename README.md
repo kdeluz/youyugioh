@@ -95,5 +95,3 @@ To get started with this project locally, follow these steps:
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
-
-## License

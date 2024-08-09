@@ -1,0 +1,106 @@
+<div class="column is-one-third">
+  <figure class="image is-square">
+    <img src="<%= @product.image_url %>" alt="<%= @product.name %>" style="object-fit: contain; height: auto;">
+  </figure>
+</div>
+<div class="column">
+  <h1 class="title"><%= @product.name %></h1>
+  <h2 class="subtitle">Market Price: $<%= @product.price %></h2>
+  <% if @product.sale %>
+    <p class="has-text-danger">On Sale!</p>
+  <% end %>
+  <p><%= @product.description %></p>
+
+  <table class="table is-fullwidth">
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Type</td>
+        <td><%= @product.card_type %></td>
+      </tr>
+      <tr>
+        <td>Attack</td>
+        <td><%= @product.atk %></td>
+      </tr>
+      <tr>
+        <td>Defense</td>
+        <td><%= @product.def %></td>
+      </tr>
+      <tr>
+        <td>Level</td>
+        <td><%= @product.level %></td>
+      </tr>
+      <tr>
+        <td>Race</td>
+        <td><%= @product.race %></td>
+      </tr>
+      <tr>
+        <td>Attribute</td>
+        <td><%= @product.card_attribute %></td>
+      </tr>
+      <tr>
+        <td>Link Marker</td>
+        <td><%= @product.linkmarker %></td>
+      </tr>
+      <tr>
+        <td>Scale</td>
+        <td><%= @product.scale %></td>
+      </tr>
+      <tr>
+        <td>Set</td>
+        <td><%= @product.cardset %></td>
+      </tr>
+      <tr>
+        <td>Archetype</td>
+        <td><%= @product.archetype %></td>
+      </tr>
+      <tr>
+        <td>Banlist</td>
+        <td><%= @product.banlist %></td>
+      </tr>
+      <tr>
+        <td>Format</td>
+        <td><%= @product.format %></td>
+      </tr>
+      <tr>
+        <td>Staple</td>
+        <td><%= @product.staple ? 'Yes' : 'No' %></td>
+      </tr>
+      <tr>
+        <td>Has Effect</td>
+        <td><%= @product.has_effect ? 'Yes' : 'No' %></td>
+      </tr>
+      <tr>
+        <td>Release Date</td>
+        <td><%= @product.startdate %></td>
+      </tr>
+      <tr>
+        <td>End Date</td>
+        <td><%= @product.enddate %></td>
+      </tr>
+      <tr>
+        <td>Region</td>
+        <td><%= @product.dateregion %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="buttons">
+    <div class="column is-one-third">
+      <%= form_with url: add_to_cart_product_path(@product), method: :post, local: true do %>
+    <div class="field">
+    <label class="label">Quantity</label>
+    <div class="control">
+        <input type="number" name="quantity" value="1" min="1" class="input">
+    </div>
+    </div>
+    <div class="control">
+      <button type="submit" class="button is-primary">Add to Cart</button>
+    </div>
+  <% end %>
+</div>
