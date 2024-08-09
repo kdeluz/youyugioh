@@ -67,6 +67,7 @@ class OrdersController < ApplicationController
       description: "Order ##{@order.id}"
     )
     Rails.logger.info "Stripe charge created: #{charge.id}"
+    @order.mark_as_paid if charge.paid
   rescue Stripe::StripeError => e
     Rails.logger.error "Stripe error while processing payment: #{e.message}"
     raise

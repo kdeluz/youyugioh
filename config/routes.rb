@@ -25,13 +25,20 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :orders, only: [:new, :create, :index, :show]
+  resources :orders, only: [:new, :create, :index, :show] do
+    member do
+      put 'confirm_payment'
+    end
+  end
+
   resources :invoices, only: [:index, :show], path: 'user/invoices'
 
   namespace :admin do
-    resources :orders, only: [:index, :show]
-    resources :invoices, only: [:index, :show]
-    get 'dashboard', to: 'admin_dashboard#index'
+    resources :orders do
+      member do
+        put 'mark_as_shipped'
+      end
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

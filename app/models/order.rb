@@ -3,6 +3,10 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :destroy
   has_one :invoice
 
+  enum order_state: { new_order: 0, paid: 1, shipped: 2 }
+
+  after_initialize :set_default_state, if: :new_record?
+
   def calculate_order_total
     total = 0
     self.order_items.each do |item|
@@ -22,5 +26,17 @@ class Order < ApplicationRecord
       hst: self.hst,
       qst: self.qst
     )
+  end
+
+  def set_default_state
+    self.order_state ||= 'new_order'
+  end
+
+  def mark_as_paid
+    update(order_state: 'paid')
+  end
+
+  def mark_as_shipped
+    update(order_state: 'shipped')
   end
 end
