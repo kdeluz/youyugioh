@@ -1,0 +1,22 @@
+<%= render 'shared/flash_notice' %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var flashNotice = document.getElementById('flash-notice');
+
+    if (flashNotice) {
+      // Slide down the flash notice
+      flashNotice.style.transition = 'top 0.5s ease-in-out';
+      flashNotice.style.top = '0';
+
+      // Slide up after 5 seconds
+      setTimeout(function() {
+        flashNotice.style.top = '-100px';
+        // Redirect after 5.5 seconds
+        setTimeout(function() {
+          window.location.href = "http://127.0.0.1:3000/user/invoices";
+        }, 500);
+      }, 5000);
+    }
+  });
+</script>

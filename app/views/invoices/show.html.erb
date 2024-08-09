@@ -1,31 +1,47 @@
-<h1>Invoice <%= @invoice.invoice_number %></h1>
+<section class="section">
+  <div class="container">
+    <div class="box">
+      <h1 class="title is-3">Invoice Details</h1>
 
-<p><strong>Total:</strong> <%= number_to_currency(@invoice.total) %></p>
-<p><strong>GST:</strong> <%= number_to_currency(@invoice.gst) %></p>
-<p><strong>PST:</strong> <%= number_to_currency(@invoice.pst) %></p>
-<p><strong>HST:</strong> <%= number_to_currency(@invoice.hst) %></p>
-<p><strong>QST:</strong> <%= number_to_currency(@invoice.qst) %></p>
+      <div class="content">
+        <p><strong>Status:</strong> <span class="tag is-info is-light"><%= @invoice.invoice_state.humanize %></span></p>
+        <p><strong>Invoice Number:</strong> <%= @invoice.invoice_number %></p>
+        <p><strong>Total:</strong> <%= number_to_currency(@invoice.total) %></p>
+        <p><strong>GST:</strong> <%= number_to_currency(@invoice.gst) %></p>
+        <p><strong>PST:</strong> <%= number_to_currency(@invoice.pst) %></p>
+        <p><strong>HST:</strong> <%= number_to_currency(@invoice.hst) %></p>
+        <p><strong>QST:</strong> <%= number_to_currency(@invoice.qst) %></p>
+      </div>
+    </div>
 
-<h2>Order Details</h2>
-<p><strong>Order ID:</strong> <%= @invoice.order.id %></p>
-<p><strong>Address:</strong> <%= @invoice.order.address_line1 %>, <%= @invoice.order.city %>, <%= @invoice.order.province %>, <%= @invoice.order.postal_code %>, <%= @invoice.order.country %></p>
+    <div class="box">
+      <h2 class="title is-4">Order Details</h2>
+      <div class="content">
+        <p><strong>Order ID:</strong> <%= @invoice.order.id %></p>
+        <p><strong>Shipping Address:</strong> <%= @invoice.order.address_line1 %>, <%= @invoice.order.city %>, <%= @invoice.order.province %>, <%= @invoice.order.postal_code %>, <%= @invoice.order.country %></p>
+      </div>
+    </div>
 
-<h2>Order Items</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @invoice.order.order_items.each do |item| %>
-      <tr>
-        <td><%= item.product.name %></td>
-        <td><%= item.quantity %></td>
-        <td><%= number_to_currency(item.price) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <div class="box">
+      <h2 class="title is-4">Items Ordered</h2>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @invoice.order.order_items.each do |item| %>
+            <tr>
+              <td><%= item.product.name %></td>
+              <td><%= item.quantity %></td>
+              <td><%= number_to_currency(item.price) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

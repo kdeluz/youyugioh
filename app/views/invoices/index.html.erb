@@ -1,28 +1,82 @@
-<h1>Your Invoices</h1>
+<section class="section">
+  <div class="container">
+    <div class="box">
+      <h1 class="title is-3">Your Orders</h1>
+      <p class="subtitle is-5">Here is a list of your past orders, including the total amount and applicable taxes. Click "View" to see more details.</p>
+    </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Invoice Number</th>
-      <th>Total</th>
-      <th>GST</th>
-      <th>PST</th>
-      <th>HST</th>
-      <th>QST</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @invoices.each do |invoice| %>
-      <tr>
-        <td><%= invoice.invoice_number %></td>
-        <td><%= number_to_currency(invoice.total) %></td>
-        <td><%= number_to_currency(invoice.gst) %></td>
-        <td><%= number_to_currency(invoice.pst) %></td>
-        <td><%= number_to_currency(invoice.hst) %></td>
-        <td><%= number_to_currency(invoice.qst) %></td>
-        <td><%= link_to 'View', invoice_path(invoice) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <div class="box">
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Invoice Number</th>
+            <th>Product Title</th>
+            <th>Total</th>
+            <th>Date Purchased</th>
+            <th>GST</th>
+            <th>PST</th>
+            <th>HST</th>
+            <th>QST</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @invoices.order(created_at: :desc).each do |invoice| %>
+            <tr>
+              <td><%= invoice.invoice_number %></td>
+              <td>
+                <% if invoice.order.order_items.present? && invoice.order.order_items.first.product.present? %>
+                  <span class="order-status-circle" data-status="<%= invoice.order.order_state %>"></span>
+                  <%= truncate(invoice.order.order_items.first.product.name, length: 30) %>
+                <% else %>
+                  <em>No Product Found</em>
+                <% end %>
+              </td>
+              <td><%= number_to_currency(invoice.total) %></td>
+              <td><%= invoice.created_at.strftime("%B %d, %Y %l:%M %p") %></td>
+              <td><%= number_to_currency(invoice.gst) %></td>
+              <td><%= number_to_currency(invoice.pst) %></td>
+              <td><%= number_to_currency(invoice.hst) %></td>
+              <td><%= number_to_currency(invoice.qst) %></td>
+              <td><%= link_to 'View', invoice_path(invoice), class: 'button is-small is-link' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const circles = document.querySelectorAll('.order-status-circle');
+
+  circles.forEach(function(circle) {
+    const status = circle.getAttribute('data-status');
+    console.log('Order State:', status); // Add this line to debug the status value
+    let color;
+
+    switch (status) {
+      case 'shipped':
+        color = 'yellow';
+        break;
+      case 'paid':
+        color = 'green';
+        break;
+      case 'new_order':
+        color = 'blue';
+        break;
+      default:
+        color = 'gray';
+    }
+
+    circle.style.display = 'inline-block';
+    circle.style.width = '10px';
+    circle.style.height = '10px';
+    circle.style.borderRadius = '50%';
+    circle.style.marginRight = '8px';
+    circle.style.backgroundColor = color;
+  });
+});
+
+</script>

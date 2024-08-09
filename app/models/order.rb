@@ -24,7 +24,8 @@ class Order < ApplicationRecord
       gst: self.gst,
       pst: self.pst,
       hst: self.hst,
-      qst: self.qst
+      qst: self.qst,
+      invoice_state: self.order_state == 'paid' ? 'paid' : 'new'
     )
   end
 
@@ -34,6 +35,7 @@ class Order < ApplicationRecord
 
   def mark_as_paid
     update(order_state: 'paid')
+    create_invoice
   end
 
   def mark_as_shipped

@@ -1,38 +1,57 @@
-<h1>Your Cart</h1>
+<section class="section">
+  <div class="container">
+    <h1 class="title is-3">Your Cart</h1>
 
-<% if @cart.empty? %>
-  <p>Your cart is empty.</p>
-<% else %>
-  <table class="table is-fullwidth">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @cart.each do |product_id, quantity| %>
-        <% product = Product.find(product_id) %>
-        <tr>
-          <td><%= product.name %></td>
-          <td>
-            <%= form_with url: update_quantity_cart_path, method: :post, local: true do %>
-              <input type="hidden" name="product_id" value="<%= product_id %>">
-              <%= number_field_tag :quantity, quantity, min: 1 %>
-              <%= submit_tag 'Update', class: 'button is-small' %>
-            <% end %>
-          </td>
-          <td>
-            <%= form_with url: remove_item_cart_path, method: :post, local: true do %>
-              <input type="hidden" name="product_id" value="<%= product_id %>">
-              <%= submit_tag 'Remove', class: 'button is-danger is-small' %>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+    <% if @cart.empty? %>
+      <div class="notification is-warning">
+        Your cart is empty.
+      </div>
+    <% else %>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @cart.each do |product_id, quantity| %>
+            <% product = Product.find(product_id) %>
+            <tr>
+              <td><%= product.name %></td>
+              <td>
+                <%= form_with url: update_quantity_cart_path, method: :post, local: true do %>
+                  <div class="field has-addons">
+                    <div class="control">
+                      <input type="hidden" name="product_id" value="<%= product_id %>">
+                      <%= number_field_tag :quantity, quantity, min: 1, class: 'input is-small' %>
+                    </div>
+                    <div class="control">
+                      <%= submit_tag 'Update', class: 'button is-info is-small' %>
+                    </div>
+                  </div>
+                <% end %>
+              </td>
+              <td>
+                <%= form_with url: remove_item_cart_path, method: :post, local: true do %>
+                  <input type="hidden" name="product_id" value="<%= product_id %>">
+                  <%= submit_tag 'Remove', class: 'button is-danger is-small' %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
 
-  <%= link_to 'Checkout', new_order_path, class: 'button is-primary' %>
-<% end %>
+      <div class="field is-grouped is-grouped-right">
+        <p class="control">
+          <%= link_to 'Continue Shopping', products_path, class: 'button is-light' %>
+        </p>
+        <p class="control">
+          <%= link_to 'Checkout', new_order_path, class: 'button is-primary' %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</section>
