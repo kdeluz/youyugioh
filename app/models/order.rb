@@ -40,5 +40,6 @@ class Order < ApplicationRecord
 
   def mark_as_shipped
     update(order_state: 'shipped')
+    invoice.update(invoice_state: 'shipped') if invoice
   end
 end

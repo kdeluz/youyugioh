@@ -54,32 +54,32 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:address_line1, :city, :province, :postal_code, :country)
   end
 
-def process_payment(stripe_token)
-  @total_amount = calculate_order_total
-  @gst, @pst, @hst, @qst, @total_with_taxes = TaxCalculator.calculate_tax(@total_amount, @order.province)
-  
-  charge = Stripe::Charge.create(
-    amount: (@total_with_taxes * 100).to_i,
-    currency: 'cad',
-    source: stripe_token,
-    description: "Order ##{@order.id}"
-  )
-  
-  Rails.logger.info "Stripe charge created: #{charge.id}"
-  
-  if charge.paid
-    @order.mark_as_paid
-    @order.create_invoice
-    session[:cart] = {}
-    redirect_to user_invoices_path, notice: 'Order was successfully placed!'
-  else
-    Rails.logger.error "Payment failed for Order ##{@order.id}"
-    render :new, alert: 'There was an issue with your payment. Please try again.'
+  def process_payment(stripe_token)
+    @total_amount = calculate_order_total
+    @gst, @pst, @hst, @qst, @total_with_taxes = TaxCalculator.calculate_tax(@total_amount, @order.province)
+    
+    charge = Stripe::Charge.create(
+      amount: (@total_with_taxes * 100).to_i,
+      currency: 'cad',
+      source: stripe_token,
+      description: "Order ##{@order.id}"
+    )
+    
+    Rails.logger.info "Stripe charge created: #{charge.id}"
+    
+    if charge.paid
+      @order.mark_as_paid
+      session[:cart] = {}
+      redirect_to "http://127.0.0.1:3000/user/invoices", notice: 'Order was successfully placed!'
+    else
+      Rails.logger.error "Payment failed for Order ##{@order.id}"
+      render :new, alert: 'There was an issue with your payment. Please try again.'
+    end
+  rescue Stripe::StripeError => e
+    Rails.logger.error "Stripe error while processing payment: #{e.message}"
+    render :new, alert: 'There was an error processing your payment. Please try again.'
   end
-rescue Stripe::StripeError => e
-  Rails.logger.error "Stripe error while processing payment: #{e.message}"
-  render :new, alert: 'There was an error processing your payment. Please try again.'
-end
+  
 
 
   def calculate_order_total
