@@ -37,7 +37,11 @@ class ProductsController < ApplicationController
   end
 
   def recently_updated
-    @products = Product.where('updated_at >= ? AND created_at < ?', 3.days.ago, 3.days.ago).page(params[:page]).per(12)
+    # Exclude new products from recently updated
+    @products = Product.where('updated_at >= ? AND created_at < ?', 3.days.ago, 3.days.ago)
+                       .order(updated_at: :desc)  # Most recent updates first
+                       .page(params[:page])
+                       .per(12)
     render :index
   end
 
@@ -65,7 +69,7 @@ class ProductsController < ApplicationController
     @products = @products.page(params[:page]).per(12)
     render :index
   end
-  
+
   def add_to_cart
     product = Product.find(params[:id])
     quantity = params[:quantity].to_i
