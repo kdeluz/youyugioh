@@ -1,61 +1,55 @@
-<section class="section">
-  <div class="container">
-    <div class="box">
-      <h1 class="title is-3">Your Orders</h1>
-      <p class="subtitle is-5">Here is a list of your past orders, including the total amount and applicable taxes. Click "View" to see more details.</p>
-    </div>
+<% content_for :title, "Order History" %>
 
-    <div class="box">
-      <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
-          <tr>
-            <th>Invoice Number</th>
-            <th>Product Title</th>
-            <th>Total</th>
-            <th>Date Purchased</th>
-            <th>GST</th>
-            <th>PST</th>
-            <th>HST</th>
-            <th>QST</th>
-            <th>Status</th> <!-- New status column -->
-            <th>Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @invoices.order(created_at: :desc).each do |invoice| %>
-            <tr>
-              <td><%= invoice.invoice_number %></td>
-              <td>
-                <% if invoice.order.order_items.present? && invoice.order.order_items.first.product.present? %>
-                  <%= truncate(invoice.order.order_items.first.product.name, length: 30) %>
-                <% else %>
-                  <em>No Product Found</em>
-                <% end %>
-              </td>
-              <td><%= number_to_currency(invoice.total) %></td>
-              <td><%= invoice.created_at.strftime("%B %d, %Y %l:%M %p") %></td>
-              <td><%= number_to_currency(invoice.gst) %></td>
-              <td><%= number_to_currency(invoice.pst) %></td>
-              <td><%= number_to_currency(invoice.hst) %></td>
-              <td><%= number_to_currency(invoice.qst) %></td>
-              <td style="
-                <% if invoice.order.order_state == 'new_order' %>
-                  background-color: blue; color: white;
-                <% elsif invoice.order.order_state == 'paid' %>
-                  background-color: green; color: white;
-                <% elsif invoice.order.order_state == 'shipped' %>
-                  background-color: yellow; color: black;
-                <% else %>
-                  background-color: gray; color: white;
-                <% end %>
-                padding: 0.2em 0.5em; border-radius: 4px;">
-                <%= invoice.order.order_state.humanize %>
-              </td>
-              <td><%= link_to 'View', invoice_path(invoice), class: 'button is-small is-link' %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+<header class="page-head">
+  <p class="eyebrow">Account</p>
+  <h1 class="page-title">Order <em>history</em></h1>
+  <p class="lede">Every past order with its status and total. Open one for the full invoice, taxes and shipping details.</p>
+</header>
+
+<% invoices = @invoices.order(created_at: :desc) %>
+
+<% if invoices.none? %>
+  <div class="empty-state">
+    <div class="glyph">◇</div>
+    <h3>Nothing here yet</h3>
+    <p>Once you place an order, its invoice will land here.</p>
+    <%= link_to "Browse the vault", root_path, class: "btn btn-primary" %>
   </div>
-</section>
+<% else %>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Invoice</th>
+          <th>First item</th>
+          <th>Placed</th>
+          <th class="text-right">Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% invoices.each do |invoice| %>
+          <tr>
+            <td class="num"><%= invoice.invoice_number %></td>
+            <td>
+              <% first_item = invoice.order.order_items.first %>
+              <% if first_item&.product %>
+                <%= truncate(first_item.product.name, length: 34) %>
+                <% if (extra = invoice.order.order_items.size - 1) > 0 %>
+                  <span class="text-muted">+<%= extra %> more</span>
+                <% end %>
+              <% else %>
+                <em class="text-muted">No product found</em>
+              <% end %>
+            </td>
+            <td class="num"><%= invoice.created_at.strftime("%b %-d, %Y") %></td>
+            <td class="num text-right"><%= number_to_currency(invoice.total) %></td>
+            <td><span class="status-pill <%= order_status_pill_class(invoice.order.order_state) %>"><%= invoice.order.order_state.humanize %></span></td>
+            <td class="text-right"><%= link_to "View", invoice_path(invoice), class: "btn btn-ghost btn-sm" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

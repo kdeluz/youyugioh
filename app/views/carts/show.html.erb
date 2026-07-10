@@ -1,57 +1,70 @@
-<section class="section">
-  <div class="container">
-    <h1 class="title is-3">Your Cart</h1>
+<% content_for :title, "Your Cart" %>
 
-    <% if @cart.empty? %>
-      <div class="notification is-warning">
-        Your cart is empty.
-      </div>
-    <% else %>
-      <table class="table is-fullwidth is-striped is-hoverable">
+<header class="page-head">
+  <p class="eyebrow">Checkout</p>
+  <h1 class="page-title">Your <em>cart</em></h1>
+</header>
+
+<% if @cart.empty? %>
+  <div class="empty-state">
+    <div class="glyph">◇</div>
+    <h3>Your cart is empty</h3>
+    <p>Go pull something worth playing.</p>
+    <%= link_to "Browse the vault", root_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
+  <div class="cart-layout">
+    <div class="table-wrap">
+      <table class="data-table">
         <thead>
           <tr>
-            <th>Product</th>
+            <th>Card</th>
+            <th>Price</th>
             <th>Quantity</th>
-            <th>Actions</th>
+            <th class="text-right">Subtotal</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
+          <% subtotal = 0 %>
           <% @cart.each do |product_id, quantity| %>
-            <% product = Product.find(product_id) %>
+            <% product = @products.find { |p| p.id.to_s == product_id.to_s } || Product.find(product_id) %>
+            <% line_total = product.price * quantity %>
+            <% subtotal += line_total %>
             <tr>
-              <td><%= product.name %></td>
+              <td><%= link_to product.name, product_path(product) %></td>
+              <td class="num"><%= number_to_currency(product.price) %></td>
               <td>
-                <%= form_with url: update_quantity_cart_path, method: :post, local: true do %>
-                  <div class="field has-addons">
-                    <div class="control">
-                      <input type="hidden" name="product_id" value="<%= product_id %>">
-                      <%= number_field_tag :quantity, quantity, min: 1, class: 'input is-small' %>
-                    </div>
-                    <div class="control">
-                      <%= submit_tag 'Update', class: 'button is-info is-small' %>
-                    </div>
-                  </div>
+                <%= form_with url: update_quantity_cart_path, method: :post, class: "cart-line-form" do %>
+                  <input type="hidden" name="product_id" value="<%= product_id %>">
+                  <%= number_field_tag :quantity, quantity, min: 1, "aria-label": "Quantity for #{product.name}" %>
+                  <%= submit_tag "Update", class: "btn btn-quiet btn-sm" %>
                 <% end %>
               </td>
-              <td>
-                <%= form_with url: remove_item_cart_path, method: :post, local: true do %>
+              <td class="num text-right"><%= number_to_currency(line_total) %></td>
+              <td class="text-right">
+                <%= form_with url: remove_item_cart_path, method: :post do %>
                   <input type="hidden" name="product_id" value="<%= product_id %>">
-                  <%= submit_tag 'Remove', class: 'button is-danger is-small' %>
+                  <%= submit_tag "Remove", class: "btn btn-danger btn-sm" %>
                 <% end %>
               </td>
             </tr>
           <% end %>
         </tbody>
       </table>
+    </div>
 
-      <div class="field is-grouped is-grouped-right">
-        <p class="control">
-          <%= link_to 'Continue Shopping', products_path, class: 'button is-light' %>
-        </p>
-        <p class="control">
-          <%= link_to 'Checkout', new_order_path, class: 'button is-primary' %>
-        </p>
+    <aside class="panel">
+      <h2 class="panel-title">Order summary</h2>
+      <ul class="totals">
+        <li><span>Items</span><span class="num"><%= @cart.values.sum(&:to_i) %></span></li>
+        <li class="grand"><span>Subtotal</span><span class="num"><%= number_to_currency(subtotal) %></span></li>
+      </ul>
+      <p class="help">Taxes are calculated at checkout based on your province.</p>
+      <div class="stack-sm mt-1">
+        <%= link_to "Proceed to checkout", new_order_path, class: "btn btn-primary btn-block" %>
+        <%= link_to "Continue shopping", root_path, class: "btn btn-ghost btn-block" %>
       </div>
-    <% end %>
+    </aside>
   </div>
-</section>
+<% end %>

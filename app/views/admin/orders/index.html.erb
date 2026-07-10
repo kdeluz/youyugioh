@@ -1,18 +1,41 @@
-<h1>All Orders</h1>
+<% content_for :title, "All Orders" %>
 
-<% @orders.each do |order| %>
-<h2>Order <%= order.id %> by <%= order.user.email %></h2>
-<p>
-  <strong>Total:</strong> <%= number_to_currency(order.calculate_order_total) %><br>
-  <strong>GST:</strong> <%= number_to_currency(order.gst) %><br>
-  <strong>PST:</strong> <%= number_to_currency(order.pst) %><br>
-  <strong>HST:</strong> <%= number_to_currency(order.hst) %><br>
-  <strong>QST:</strong> <%= number_to_currency(order.qst) %><br>
-</p>
-  <h3>Items:</h3>
-  <ul>
-    <% order.order_items.each do |item| %>
-      <li><%= item.product.name %> - Quantity: <%= item.quantity %> - Price: <%= number_to_currency(item.price) %></li>
-    <% end %>
-  </ul>
+<header class="page-head">
+  <p class="eyebrow">Staff only</p>
+  <h1 class="page-title">All <em>orders</em></h1>
+</header>
+
+<% if @orders.none? %>
+  <div class="empty-state">
+    <div class="glyph">◇</div>
+    <h3>No orders yet</h3>
+    <p>Customer orders will appear here as they come in.</p>
+  </div>
+<% else %>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th class="text-right">Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td class="num">#<%= order.id %></td>
+            <td><%= order.user&.email %></td>
+            <td class="num"><%= order.order_items.sum(&:quantity) %></td>
+            <td class="num text-right"><%= number_to_currency(order.calculate_order_total) %></td>
+            <td><span class="status-pill <%= order_status_pill_class(order.order_state) %>"><%= order.order_state.humanize %></span></td>
+            <td class="text-right"><%= link_to "View", admin_order_path(order), class: "btn btn-ghost btn-sm" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% end %>

@@ -1,18 +1,49 @@
-<h1>Your Orders</h1>
+<% content_for :title, "Your Orders" %>
 
-<% @orders.each do |order| %>
-  <h2>Order <%= order.id %></h2>
-  <p>
-    <strong>Total:</strong> <%= number_to_currency(order.calculate_order_total) %><br>
-    <strong>GST:</strong> <%= number_to_currency(order.gst) %><br>
-    <strong>PST:</strong> <%= number_to_currency(order.pst) %><br>
-    <strong>HST:</strong> <%= number_to_currency(order.hst) %><br>
-    <strong>QST:</strong> <%= number_to_currency(order.qst) %>
-  </p>
-  <h3>Items:</h3>
-  <ul>
-    <% order.order_items.each do |item| %>
-      <li><%= item.product.name %> - Quantity: <%= item.quantity %> - Price: <%= number_to_currency(item.price) %></li>
-    <% end %>
-  </ul>
+<header class="page-head">
+  <p class="eyebrow">Account</p>
+  <h1 class="page-title">Your <em>orders</em></h1>
+</header>
+
+<% if @orders.none? %>
+  <div class="empty-state">
+    <div class="glyph">◇</div>
+    <h3>No orders yet</h3>
+    <p>Your past orders will show up here once you've checked out.</p>
+    <%= link_to "Browse the vault", root_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
+  <% @orders.each do |order| %>
+    <div class="panel">
+      <div class="flex-between mb-1">
+        <h2 class="panel-title" style="margin:0;">Order #<%= order.id %></h2>
+        <span class="status-pill <%= order_status_pill_class(order.order_state) %>"><%= order.order_state.humanize %></span>
+      </div>
+
+      <div class="table-wrap mb-1">
+        <table class="data-table">
+          <thead>
+            <tr><th>Card</th><th>Qty</th><th class="text-right">Price</th></tr>
+          </thead>
+          <tbody>
+            <% order.order_items.each do |item| %>
+              <tr>
+                <td><%= item.product.name %></td>
+                <td class="num"><%= item.quantity %></td>
+                <td class="num text-right"><%= number_to_currency(item.price) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="totals" style="max-width: 320px; margin-left: auto;">
+        <% { "GST" => order.gst, "PST" => order.pst, "HST" => order.hst, "QST" => order.qst }.each do |label, amount| %>
+          <% next if amount.to_f.zero? %>
+          <li><span><%= label %></span><span class="num"><%= number_to_currency(amount) %></span></li>
+        <% end %>
+        <li class="grand"><span>Total</span><span class="num"><%= number_to_currency(order.calculate_order_total) %></span></li>
+      </ul>
+    </div>
+  <% end %>
 <% end %>

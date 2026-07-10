@@ -1,23 +1,23 @@
-        <div class="column is-one-quarter-desktop is-one-third-tablet">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image">
-                <%= link_to image_tag(product.image_url, alt: product.name, style: "object-fit: contain; height: auto; width: 100%;"), product_path(product) %>
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="media">
-                <div class="media-content">
-                  <p class="title is-4"><%= link_to product.name, product_path(product) %></p>
-                  <p class="subtitle is-6">Market Price: $<%= product.price %></p>
-                </div>
-              </div>
-              <div class="content">
-                <p><%= truncate(product.description, length: 100) %></p>
-                <% if product.sale %>
-                  <p class="has-text-danger">On Sale!</p>
-                <% end %>
-              </div>
-            </div>
-          </div>
+<article class="product-card">
+  <div class="pc-media">
+    <div class="pc-flags">
+      <% if product.sale %>
+        <span class="badge badge-sale">Sale</span>
+      <% else %>
+        <span></span>
+      <% end %>
+      <% if product.respond_to?(:staple) && product.staple %>
+        <span class="badge badge-gold">Staple</span>
+      <% end %>
     </div>
+    <%= image_tag product.image_url.presence || "placeholder.png", alt: product.name, loading: "lazy" %>
+  </div>
+  <div class="pc-body">
+    <p class="pc-type"><%= product.card_type %></p>
+    <h3 class="pc-name"><%= link_to product.name, product_path(product) %></h3>
+    <div class="pc-foot">
+      <span class="pc-price-label">Market</span>
+      <span class="pc-price"><%= number_to_currency(product.price) %></span>
+    </div>
+  </div>
+</article>

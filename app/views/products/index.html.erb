@@ -1,51 +1,56 @@
-<div class="columns">
-  <!-- Sidebar Column -->
-  <div class="column is-one-quarter">
-    <aside class="menu">
-      <p class="menu-label">
-        Categories
-      </p>
-      <ul class="menu-list">
-        <li><a href="<%= root_path %>">All Categories</a></li>
-        <% @categories.each do |category| %>
-          <li><a href="<%= category_path(category.card_type) %>"><%= category.card_type %></a></li>
-        <% end %>
-      </ul>
-    </aside>
+<%
+  eyebrow, title_html, subtitle =
+    case params[:action]
+    when "category"
+      ["Category", "#{h(params[:category])} <em>singles</em>".html_safe, "Every #{params[:category].to_s.downcase} currently in the vault."]
+    when "sale"
+      ["Limited time", "On <em>sale</em>".html_safe, "Marked-down singles — gone when they're gone."]
+    when "new_products"
+      ["Fresh pulls", "New <em>arrivals</em>".html_safe, "Cards added to the shop in the last three days."]
+    when "recently_updated"
+      ["Restocked", "Recently <em>updated</em>".html_safe, "Listings with fresh prices or stock changes."]
+    when "search"
+      ["Search", "Results for <em>#{h(params[:keyword].presence || 'all cards')}</em>".html_safe,
+       params[:category].present? ? "Filtered to #{params[:category]}." : "Across every category in the shop."]
+    else
+      ["The vault", "Every card, <em>market priced</em>".html_safe, "Browse singles across every set — staples, chase cards and budget picks."]
+    end
+%>
+
+<% content_for :title, strip_tags(title_html.to_s) %>
+
+<header class="page-head">
+  <p class="eyebrow"><%= eyebrow %></p>
+  <h1 class="page-title"><%= title_html %></h1>
+  <p class="lede"><%= subtitle %></p>
+</header>
+
+<div class="toolbar">
+  <span class="result-count"><%= pluralize(number_with_delimiter(@products.total_count), "card") %> · page <%= @products.current_page %> of <%= [@products.total_pages, 1].max %></span>
+  <div class="select-pill">
+    <select onchange="window.location.href=this.value;" aria-label="Sort products">
+      <option value="<%= url_for(request.query_parameters.except('sort', 'page')) %>" <%= "selected" if params[:sort].blank? %>>Sort: Featured</option>
+      <option value="<%= url_for(request.query_parameters.except('page').merge(sort: 'alphabetical')) %>" <%= "selected" if params[:sort] == 'alphabetical' %>>Sort: A–Z</option>
+      <option value="<%= url_for(request.query_parameters.except('page').merge(sort: 'price_high_low')) %>" <%= "selected" if params[:sort] == 'price_high_low' %>>Sort: Price high–low</option>
+      <option value="<%= url_for(request.query_parameters.except('page').merge(sort: 'price_low_high')) %>" <%= "selected" if params[:sort] == 'price_low_high' %>>Sort: Price low–high</option>
+    </select>
   </div>
-
-  <!-- Products Column -->
-  <div class="column is-four-quarters">
-    <h1 class="title">Products</h1>
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <li><a href="<%= root_path %>">Home</a></li>
-        <li class="is-active"><a href="#" aria-current="page">Products</a></li>
-      </ul>
-    </nav>
-
-    <div class="control">
-    <div class="select">
-      <select onchange="window.location.href=this.value;">
-        <option value="<%= products_path(sort: 'alphabetical') %>" <%= 'selected' if params[:sort] == 'alphabetical' %>>Alphabetical</option>
-        <option value="<%= products_path(sort: 'price_high_low') %>" <%= 'selected' if params[:sort] == 'price_high_low' %>>Price High-Low</option>
-        <option value="<%= products_path(sort: 'price_low_high') %>" <%= 'selected' if params[:sort] == 'price_low_high' %>>Price Low-High</option>
-      </select>
-    </div>
-    <%= link_to 'Clear Filters', products_path, class: 'button' %>
-  </div>
-  
-
-    <div class="columns is-multiline is-centered">
-      <% @products.each do |product| %>
-        <%= render partial: 'product', locals: { product: product } %>
-      <% end %>
-    </div>  
-
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-      <%= paginate @products %>
-    </nav>
-  </div>
+  <% if params[:sort].present? || params[:keyword].present? || params[:action] != "index" %>
+    <%= link_to "Clear filters", root_path, class: "btn btn-ghost btn-sm" %>
+  <% end %>
 </div>
 
-<%= link_to 'Cart', cart_path, class: 'button is-primary fixed-cart-button' %>
+<% if @products.any? %>
+  <div class="product-grid">
+    <%= render partial: "product", collection: @products %>
+  </div>
+
+  <%= paginate @products %>
+<% else %>
+  <div class="empty-state">
+    <div class="glyph">◇</div>
+    <h3>No cards found</h3>
+    <p>Nothing in the vault matches this filter. Try another search or browse the full collection.</p>
+    <%= link_to "Browse all cards", root_path, class: "btn btn-primary" %>
+  </div>
+<% end %>

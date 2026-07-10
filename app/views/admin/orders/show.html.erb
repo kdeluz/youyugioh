@@ -1,16 +1,57 @@
-<h1>Order <%= @order.id %></h1>
-<p>
-  <strong>Customer:</strong> <%= @order.user.email %><br>
-  <strong>Total:</strong> <%= number_to_currency(@order.calculate_order_total) %><br>
-  <strong>GST:</strong> <%= number_to_currency(@order.gst) %><br>
-  <strong>PST:</strong> <%= number_to_currency(@order.pst) %><br>
-  <strong>HST:</strong> <%= number_to_currency(@order.hst) %><br>
-  <strong>QST:</strong> <%= number_to_currency(@order.qst) %>
-</p>
+<% content_for :title, "Order ##{@order.id}" %>
 
-<h3>Items:</h3>
-<ul>
-  <% @order.order_items.each do |item| %>
-    <li><%= item.product.name %> - Quantity: <%= item.quantity %> - Price: <%= number_to_currency(item.price) %></li>
-  <% end %>
-</ul>
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <%= link_to "All orders", admin_orders_path %>
+  <span class="sep">/</span>
+  <span>Order #<%= @order.id %></span>
+</nav>
+
+<header class="page-head">
+  <p class="eyebrow">Staff only</p>
+  <div class="flex-between">
+    <h1 class="page-title" style="margin:0;">Order <em>#<%= @order.id %></em></h1>
+    <span class="status-pill <%= order_status_pill_class(@order.order_state) %>"><%= @order.order_state.humanize %></span>
+  </div>
+</header>
+
+<div class="panel">
+  <h2 class="panel-title">Customer</h2>
+  <dl class="meta-list">
+    <div>
+      <dt>Email</dt>
+      <dd><%= @order.user&.email %></dd>
+    </div>
+    <div>
+      <dt>Ships to</dt>
+      <dd><%= [@order.address_line1, @order.city, @order.province, @order.postal_code, @order.country].compact_blank.join(", ") %></dd>
+    </div>
+  </dl>
+</div>
+
+<div class="panel">
+  <h2 class="panel-title">Items</h2>
+  <div class="table-wrap mb-1">
+    <table class="data-table">
+      <thead>
+        <tr><th>Card</th><th>Qty</th><th class="text-right">Price</th></tr>
+      </thead>
+      <tbody>
+        <% @order.order_items.each do |item| %>
+          <tr>
+            <td><%= item.product.name %></td>
+            <td class="num"><%= item.quantity %></td>
+            <td class="num text-right"><%= number_to_currency(item.price) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="totals" style="max-width: 320px; margin-left: auto;">
+    <% { "GST" => @order.gst, "PST" => @order.pst, "HST" => @order.hst, "QST" => @order.qst }.each do |label, amount| %>
+      <% next if amount.to_f.zero? %>
+      <li><span><%= label %></span><span class="num"><%= number_to_currency(amount) %></span></li>
+    <% end %>
+    <li class="grand"><span>Total</span><span class="num"><%= number_to_currency(@order.calculate_order_total) %></span></li>
+  </ul>
+</div>

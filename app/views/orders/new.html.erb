@@ -1,93 +1,88 @@
-<section class="section">
-  <div class="container">
-    <h1 class="title is-3">Checkout</h1>
+<% content_for :title, "Checkout" %>
 
-    <div class="box">
-      <%= form_with model: @order, url: orders_path, method: :post, local: true, id: 'payment-form' do |form| %>
-        <div class="field">
-          <%= form.label :address_line1, class: 'label' %>
-          <div class="control">
-            <%= form.text_field :address_line1, class: 'input', value: @order.address_line1 %>
+<header class="page-head">
+  <p class="eyebrow">Final step</p>
+  <h1 class="page-title">Check<em>out</em></h1>
+</header>
+
+<%= form_with model: @order, url: orders_path, method: :post, id: "payment-form" do |form| %>
+  <div class="cart-layout">
+    <div>
+      <div class="panel">
+        <h2 class="panel-title">Shipping address</h2>
+        <div class="form-grid">
+          <div class="field is-full">
+            <%= form.label :address_line1, "Address", class: "label" %>
+            <%= form.text_field :address_line1, class: "input", autocomplete: "address-line1" %>
+          </div>
+          <div class="field">
+            <%= form.label :city, class: "label" %>
+            <%= form.text_field :city, class: "input", autocomplete: "address-level2" %>
+          </div>
+          <div class="field">
+            <%= form.label :province, class: "label" %>
+            <%= form.select :province, province_options, {}, class: "input" %>
+          </div>
+          <div class="field">
+            <%= form.label :postal_code, class: "label" %>
+            <%= form.text_field :postal_code, class: "input", autocomplete: "postal-code" %>
+          </div>
+          <div class="field">
+            <%= form.label :country, class: "label" %>
+            <%= form.text_field :country, class: "input", autocomplete: "country-name" %>
           </div>
         </div>
+      </div>
 
+      <div class="panel">
+        <h2 class="panel-title">Payment</h2>
         <div class="field">
-          <%= form.label :city, class: 'label' %>
-          <div class="control">
-            <%= form.text_field :city, class: 'input', value: @order.city %>
-          </div>
-        </div>
-
-        <div class="field">
-          <%= form.label :province, class: 'label' %>
-          <div class="control">
-            <%= form.select :province, province_options, {}, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="field">
-          <%= form.label :postal_code, class: 'label' %>
-          <div class="control">
-            <%= form.text_field :postal_code, class: 'input', value: @order.postal_code %>
-          </div>
-        </div>
-
-        <div class="field">
-          <%= form.label :country, class: 'label' %>
-          <div class="control">
-            <%= form.text_field :country, class: 'input', value: @order.country %>
-          </div>
-        </div>
-
-        <h2 class="title is-4">Order Summary</h2>
-        <table class="table is-fullwidth is-striped is-hoverable">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @cart.each do |product_id, quantity| %>
-              <% product = Product.find(product_id) %>
-              <tr>
-                <td><%= product.name %></td>
-                <td><%= quantity %></td>
-                <td>$<%= product.price * quantity %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-
-        <h2 class="title is-4">Taxes</h2>
-        <div class="content">
-          <p><strong>Total before taxes:</strong> <%= number_to_currency(@total_amount, unit: "$") %></p>
-          <p><strong>GST:</strong> <%= number_to_currency(@gst, unit: "$") %></p>
-          <p><strong>PST:</strong> <%= number_to_currency(@pst, unit: "$") %></p>
-          <p><strong>HST:</strong> <%= number_to_currency(@hst, unit: "$") %></p>
-          <p><strong>QST:</strong> <%= number_to_currency(@qst, unit: "$") %></p>
-          <p><strong>Total after taxes:</strong> <%= number_to_currency(@total_with_taxes, unit: "$") %></p>
-        </div>
-
-        <div class="field">
-          <div id="card-element" class="control">
-            <!-- A Stripe Element will be inserted here. -->
-          </div>
+          <label class="label">Card details</label>
+          <div id="card-element" class="card-element-box"></div>
           <p id="card-errors" class="help is-danger" role="alert"></p>
         </div>
+        <p class="help">Payments are processed securely by Stripe. We never see your card number.</p>
+      </div>
+    </div>
 
-        <div class="field">
-          <div class="control">
-            <%= form.submit 'Place Order', class: 'button is-primary is-fullwidth' %>
-          </div>
+    <aside>
+      <div class="panel">
+        <h2 class="panel-title">Order summary</h2>
+        <div class="table-wrap mb-1">
+          <table class="data-table">
+            <thead>
+              <tr><th>Card</th><th>Qty</th><th class="text-right">Price</th></tr>
+            </thead>
+            <tbody>
+              <% @cart.each do |product_id, quantity| %>
+                <% product = Product.find(product_id) %>
+                <tr>
+                  <td><%= truncate(product.name, length: 32) %></td>
+                  <td class="num"><%= quantity %></td>
+                  <td class="num text-right"><%= number_to_currency(product.price * quantity) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
 
-        <%= form.hidden_field :stripe_token, id: 'stripeToken' %>
-      <% end %>
-    </div>
+        <ul class="totals">
+          <li><span>Subtotal</span><span class="num"><%= number_to_currency(@total_amount) %></span></li>
+          <% { "GST" => @gst, "PST" => @pst, "HST" => @hst, "QST" => @qst }.each do |label, amount| %>
+            <% next if amount.to_f.zero? %>
+            <li><span><%= label %></span><span class="num"><%= number_to_currency(amount) %></span></li>
+          <% end %>
+          <li class="grand"><span>Total</span><span class="num"><%= number_to_currency(@total_with_taxes) %></span></li>
+        </ul>
+
+        <%= form.submit "Place order", class: "btn btn-primary btn-block" %>
+        <p class="help mt-1"><%= link_to "← Back to cart", cart_path %></p>
+      </div>
+    </aside>
   </div>
-</section>
+
+  <%= form.hidden_field :stripe_token, id: "stripeToken" %>
+<% end %>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
@@ -97,17 +92,17 @@
 
     var style = {
       base: {
-        color: '#32325d',
+        color: '#241a06',
         fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
         fontSmoothing: 'antialiased',
         fontSize: '16px',
         '::placeholder': {
-          color: '#aab7c4'
+          color: '#8d7f63'
         }
       },
       invalid: {
-        color: '#fa755a',
-        iconColor: '#fa755a'
+        color: '#c0392b',
+        iconColor: '#c0392b'
       }
     };
 

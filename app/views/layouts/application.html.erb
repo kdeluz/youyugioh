@@ -1,102 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>YouYuGiOh</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= content_for?(:title) ? "#{yield(:title)} · YouYuGiOh" : "YouYuGiOh — Yu-Gi-Oh! Card Shop" %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <script src="https://js.stripe.com/v3/"></script>
-  <style>
-    body {
-      padding-top: 3.25rem;
-    }
-    .fixed-cart-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
 </head>
 <body>
-  <nav class="navbar navbar-custom is-fixed-top" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="<%= root_path %>">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="<%= root_path %>">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <path d="M13 1.5 24.5 21.5H1.5L13 1.5Z" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M7.5 15.5c1.8-2.4 3.6-3.6 5.5-3.6s3.7 1.2 5.5 3.6c-1.8 2.4-3.6 3.6-5.5 3.6s-3.7-1.2-5.5-3.6Z" stroke="var(--gold)" stroke-width="1.3"/>
+          <circle cx="13" cy="15.5" r="1.6" fill="var(--gold)"/>
+        </svg>
+        <span>YOU<span class="brand-accent">YUGIOH</span></span>
       </a>
 
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
+      <%= form_with url: search_path, method: :get, class: "search-form", role: "search" do |form| %>
+        <%= form.text_field :keyword, value: params[:keyword], placeholder: "Search the vault…", "aria-label": "Search products" %>
+        <%= form.select :category,
+              options_for_select([["All cards", ""]] + (@categories || []).map { |c| [c.card_type, c.card_type] }, params[:category]),
+              {}, "aria-label": "Category" %>
+        <button type="submit" class="search-submit">Search</button>
+      <% end %>
 
-    <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
-        <a class="navbar-item" href="<%= root_path %>">Home</a>
-        <a class="navbar-item" href="<%= about_path %>">About Us</a>
-        <a class="navbar-item" href="<%= category_path('Effect Monster') %>">Effect Monster Cards</a>
-        <a class="navbar-item" href="<%= category_path('Spell Card') %>">Spell Cards</a>
-        <a class="navbar-item" href="<%= category_path('Trap Card') %>">Trap Cards</a>
-        <a class="navbar-item" href="<%= sale_path %>">On Sale</a>
-        <a class="navbar-item" href="<%= new_products_path %>">New Arrivals</a>
-        <a class="navbar-item" href="<%= recently_updated_path %>">Recently Updated</a>
-        <a class="navbar-item" href="<%= contact_path %>">Contact Us</a>
-      </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <%= form_with url: search_path, method: :get, local: true, class: "field has-addons" do |form| %>
-            <div class="control is-expanded">
-              <%= form.text_field :keyword, placeholder: "Search products...", class: "input is-fullwidth" %>
-            </div>
-            <div class="control is-expanded">
-              <% if @categories.present? %>
-                <div class="select is-fullwidth">
-                  <%= form.select :category, options_for_select([['All Categories', '']] + @categories.map { |c| [c.card_type, c.card_type] }), {}, class: "is-fullwidth" %>
-                </div>
-              <% else %>
-                <div class="select is-fullwidth">
-                  <select disabled class="is-fullwidth">
-                    <option>All Categories</option>
-                  </select>
-                </div>
-              <% end %>
-            </div>
-            <div class="control">
-              <%= form.submit "Search", class: "button is-primary" %>
-            </div>
-          <% end %>
-        </div>
+      <div class="header-actions">
+        <button type="button" class="menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="cat-nav">Menu</button>
         <% if user_signed_in? %>
-          <div class="navbar-item">
-            <%= link_to 'User Account', invoices_path, class: 'button is-primary' %>
-          </div>
+          <%= link_to "Account", invoices_path, class: "btn btn-quiet btn-sm" %>
           <% if current_user.admin? %>
-            <div class="navbar-item">
-              <a class="button is-primary" href="<%= admin_dashboard_path %>">Admin Dashboard</a>
-            </div>
+            <%= link_to "Admin", admin_dashboard_path, class: "btn btn-ghost btn-sm" %>
           <% end %>
-          <div class="navbar-item">
-            <%= link_to 'Logout', destroy_user_session_path, method: :delete, class: "button is-light" %>
-          </div>
+          <%= button_to "Log out", destroy_user_session_path, method: :delete, class: "btn btn-ghost btn-sm" %>
         <% else %>
-          <div class="navbar-item">
-            <%= link_to 'Login', new_user_session_path, class: "button is-primary" %>
-          </div>
-          <div class="navbar-item">
-            <%= link_to 'Sign up', new_user_registration_path, class: "button is-light" %>
-          </div>
+          <%= link_to "Log in", new_user_session_path, class: "btn btn-quiet btn-sm" %>
+          <%= link_to "Sign up", new_user_registration_path, class: "btn btn-ghost btn-sm" %>
+        <% end %>
+        <%= link_to cart_path, class: "btn btn-primary btn-sm cart-link" do %>
+          Cart<span class="cart-count"><%= cart_item_count %></span>
         <% end %>
       </div>
     </div>
-  </nav>
 
-  <section class="section">
+    <nav class="cat-nav" id="cat-nav" aria-label="Browse">
+      <div class="container cat-nav-inner">
+        <%= link_to "All Cards", root_path, class: "cat-link #{'is-active' if current_page?(root_path)}" %>
+        <%= link_to "Effect Monsters", category_path("Effect Monster"), class: "cat-link #{'is-active' if request.path == category_path('Effect Monster')}" %>
+        <%= link_to "Spell Cards", category_path("Spell Card"), class: "cat-link #{'is-active' if request.path == category_path('Spell Card')}" %>
+        <%= link_to "Trap Cards", category_path("Trap Card"), class: "cat-link #{'is-active' if request.path == category_path('Trap Card')}" %>
+        <%= link_to "On Sale", sale_path, class: "cat-link is-hot #{'is-active' if current_page?(sale_path)}" %>
+        <%= link_to "New Arrivals", new_products_path, class: "cat-link #{'is-active' if current_page?(new_products_path)}" %>
+        <%= link_to "Recently Updated", recently_updated_path, class: "cat-link #{'is-active' if current_page?(recently_updated_path)}" %>
+        <%= link_to "About", about_path, class: "cat-link #{'is-active' if current_page?(about_path)}" %>
+        <%= link_to "Contact", contact_path, class: "cat-link #{'is-active' if current_page?(contact_path)}" %>
+      </div>
+    </nav>
+  </header>
+
+  <% if flash.any? %>
+    <div class="flash-stack" data-flash-stack>
+      <% flash.each do |type, message| %>
+        <% next if message.blank? %>
+        <div class="flash <%= type.to_s == 'alert' ? 'is-alert' : 'is-notice' %>" role="status"><%= message %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <main class="site-main">
     <div class="container">
       <%= yield %>
     </div>
-  </section>
+  </main>
 
-  <%= link_to 'Cart', cart_path, class: 'button is-primary fixed-cart-button' %>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a class="brand" href="<%= root_path %>">
+            <span>YOU<span class="brand-accent">YUGIOH</span></span>
+          </a>
+          <p>Singles, staples and chase cards for duelists. Every card priced to market and shipped across Canada.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><%= link_to "All Cards", root_path %></li>
+            <li><%= link_to "On Sale", sale_path %></li>
+            <li><%= link_to "New Arrivals", new_products_path %></li>
+            <li><%= link_to "Recently Updated", recently_updated_path %></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul>
+            <% if user_signed_in? %>
+              <li><%= link_to "Order History", invoices_path %></li>
+              <li><%= link_to "Cart", cart_path %></li>
+            <% else %>
+              <li><%= link_to "Log in", new_user_session_path %></li>
+              <li><%= link_to "Sign up", new_user_registration_path %></li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><%= link_to "About Us", about_path %></li>
+            <li><%= link_to "Contact", contact_path %></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-note">
+        <span>© <%= Date.current.year %> YouYuGiOh. Not affiliated with Konami.</span>
+        <span>It's time to d-d-d-duel.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var toggle = document.querySelector("[data-menu-toggle]");
+      var nav = document.getElementById("cat-nav");
+      if (toggle && nav) {
+        toggle.addEventListener("click", function () {
+          var open = nav.classList.toggle("is-open");
+          toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      }
+
+      var stack = document.querySelector("[data-flash-stack]");
+      if (stack) {
+        setTimeout(function () {
+          stack.querySelectorAll(".flash").forEach(function (el) {
+            el.classList.add("is-leaving");
+            el.addEventListener("transitionend", function () { el.remove(); });
+          });
+        }, 5000);
+      }
+    })();
+  </script>
 </body>
 </html>

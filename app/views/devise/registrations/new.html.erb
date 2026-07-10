@@ -1,86 +1,71 @@
-<h2 class="title">Sign up</h2>
+<% content_for :title, "Sign up" %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'box' }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<div class="auth-wrap is-wide">
+  <div class="auth-card">
+    <h1 class="auth-title">Join the duel</h1>
+    <p class="auth-sub">Create an account to order singles and keep your shipping details on file.</p>
 
-  <div class="field">
-    <%= f.label :username, class: 'label' %>
-    <div class="control">
-      <%= f.text_field :username, autofocus: true, autocomplete: "username", class: 'input' %>
-    </div>
-  </div>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
-    <%= f.label :email, class: 'label' %>
-    <div class="control">
-      <%= f.email_field :email, autocomplete: "email", class: 'input' %>
-    </div>
-  </div>
+      <div class="form-grid">
+        <div class="field">
+          <%= f.label :username, class: "label" %>
+          <%= f.text_field :username, autofocus: true, autocomplete: "username", class: "input" %>
+        </div>
 
-  <div class="field">
-    <%= f.label :password, class: 'label' %>
-    <% if @minimum_password_length %>
-      <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <div class="field">
+          <%= f.label :email, class: "label" %>
+          <%= f.email_field :email, autocomplete: "email", class: "input" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :password, class: "label" %>
+          <%= f.password_field :password, autocomplete: "new-password", class: "input" %>
+          <% if @minimum_password_length %>
+            <p class="help"><%= @minimum_password_length %> characters minimum</p>
+          <% end %>
+        </div>
+
+        <div class="field">
+          <%= f.label :password_confirmation, class: "label" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input" %>
+        </div>
+
+        <div class="field is-full">
+          <%= f.label :address_line1, class: "label" %>
+          <%= f.text_field :address_line1, autocomplete: "address-line1", class: "input" %>
+        </div>
+
+        <div class="field is-full">
+          <%= f.label :address_line2, class: "label" %>
+          <%= f.text_field :address_line2, autocomplete: "address-line2", class: "input" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :city, class: "label" %>
+          <%= f.text_field :city, autocomplete: "address-level2", class: "input" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :province, class: "label" %>
+          <%= f.select :province, province_options, {}, class: "input" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :postal_code, class: "label" %>
+          <%= f.text_field :postal_code, autocomplete: "postal-code", class: "input" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :country, class: "label" %>
+          <%= f.text_field :country, autocomplete: "country-name", class: "input" %>
+        </div>
+      </div>
+
+      <%= f.submit "Sign up", class: "btn btn-primary btn-block" %>
     <% end %>
-    <div class="control">
-      <%= f.password_field :password, autocomplete: "new-password", class: 'input' %>
-    </div>
-  </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation, class: 'label' %>
-    <div class="control">
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: 'input' %>
-    </div>
+    <%= render "devise/shared/links" %>
   </div>
-
-  <div class="field">
-    <%= f.label :address_line1, class: 'label' %>
-    <div class="control">
-      <%= f.text_field :address_line1, autocomplete: "address-line1", class: 'input' %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :address_line2, class: 'label' %>
-    <div class="control">
-      <%= f.text_field :address_line2, autocomplete: "address-line2", class: 'input' %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :city, class: 'label' %>
-    <div class="control">
-      <%= f.text_field :city, autocomplete: "city", class: 'input' %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :province %>
-    <div class="control">
-      <%= f.select :province, province_options, {}, class: 'input' %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :postal_code, class: 'label' %>
-    <div class="control">
-      <%= f.text_field :postal_code, autocomplete: "postal_code", class: 'input' %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :country, class: 'label' %>
-    <div class="control">
-      <%= f.text_field :country, autocomplete: "country", class: 'input' %>
-    </div>
-  </div>
-
-  <div class="field">
-    <div class="control">
-      <%= f.submit "Sign up", class: 'button is-primary' %>
-    </div>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

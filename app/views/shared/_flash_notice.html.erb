@@ -1,3 +1,5 @@
-<div id="flash-notice" class="notification is-success" style="position: fixed; top: -100px; width: 100%; text-align: center; z-index: 1000;">
-  <%= flash[:notice] %>
-</div>
+<% if flash[:notice].present? %>
+  <div class="flash-stack" data-flash-stack>
+    <div class="flash is-notice" role="status"><%= flash[:notice] %></div>
+  </div>
+<% end %>

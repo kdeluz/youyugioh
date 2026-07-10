@@ -1,4 +1,14 @@
-<h1>About Us</h1>
-<div>
-  <%= @about_page.content.html_safe if @about_page %>
+<% content_for :title, "About Us" %>
+
+<header class="page-head">
+  <p class="eyebrow">The shop</p>
+  <h1 class="page-title">About <em>us</em></h1>
+</header>
+
+<div class="prose">
+  <% if @about_page %>
+    <%= @about_page.content.html_safe %>
+  <% else %>
+    <p>We're duelists first, shopkeepers second. YouYuGiOh is a small Canadian card shop selling Yu-Gi-Oh! singles at honest market prices.</p>
+  <% end %>
 </div>

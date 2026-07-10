@@ -1,9 +1,74 @@
-<section class="section">
-  <h2>Product Information</h2>
-  <a href="<%= root_path %>" class="button is-link">Back to Products</a>
-  <div class="container">
-    <div class="columns">
-      <%= render partial: 'product_info', locals: { product: @product } %>
+<% content_for :title, @product.name %>
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <%= link_to "The Vault", root_path %>
+  <span class="sep">/</span>
+  <%= link_to @product.card_type, category_path(@product.card_type) %>
+  <span class="sep">/</span>
+  <span><%= truncate(@product.name, length: 40) %></span>
+</nav>
+
+<div class="product-detail">
+  <figure class="pd-media">
+    <%= image_tag @product.image_url.presence || "placeholder.png", alt: @product.name %>
+  </figure>
+
+  <div>
+    <div class="actions-row mb-1">
+      <span class="badge badge-gold"><%= @product.card_type %></span>
+      <% if @product.sale %><span class="badge badge-sale">On Sale</span><% end %>
+      <% if @product.staple %><span class="badge">Staple</span><% end %>
+      <% if @product.archetype.present? %><span class="badge"><%= @product.archetype %></span><% end %>
     </div>
+
+    <h1 class="pd-title"><%= @product.name %></h1>
+
+    <div class="pd-price-row">
+      <span class="pd-price"><%= number_to_currency(@product.price) %></span>
+      <span class="pc-price-label">Market price</span>
+    </div>
+
+    <p class="pd-desc"><%= @product.description %></p>
+
+    <%= form_with url: add_to_cart_product_path(@product), method: :post, class: "pd-buy" do %>
+      <div class="qty-field">
+        <label class="label" for="quantity">Qty</label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1">
+      </div>
+      <button type="submit" class="btn btn-primary">Add to cart</button>
+      <%= link_to "Keep browsing", root_path, class: "btn btn-ghost" %>
+    <% end %>
+
+    <h2 class="section-title">Card details</h2>
+    <dl class="spec-grid">
+      <%
+        specs = {
+          "Type"         => @product.card_type,
+          "Attack"       => @product.atk,
+          "Defense"      => @product.def,
+          "Level"        => @product.level,
+          "Race"         => @product.race,
+          "Attribute"    => @product.card_attribute,
+          "Link Marker"  => @product.linkmarker,
+          "Scale"        => @product.scale,
+          "Set"          => @product.cardset,
+          "Archetype"    => @product.archetype,
+          "Banlist"      => @product.banlist,
+          "Format"       => @product.format,
+          "Staple"       => (@product.staple ? "Yes" : nil),
+          "Has Effect"   => (@product.has_effect ? "Yes" : "No"),
+          "Release Date" => @product.startdate,
+          "End Date"     => @product.enddate,
+          "Region"       => @product.dateregion
+        }
+      %>
+      <% specs.each do |label, value| %>
+        <% next if value.blank? %>
+        <div class="spec">
+          <dt><%= label %></dt>
+          <dd><%= value %></dd>
+        </div>
+      <% end %>
+    </dl>
   </div>
-</section>
+</div>
